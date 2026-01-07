@@ -3,381 +3,410 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAD Smart Contract</title>
+    <title>MAD Smart Contract - Editable</title>
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
-        :root { --theme-gold: #D4AF37; --bg-gray: #f4f4f4; --btn-green: #27ae60; --btn-blue: #2980b9; }
-        @page { size: A4; margin: 10mm; } 
+        :root { 
+            --primary: #D4AF37; 
+            --dark: #2c3e50; 
+            --light: #f8f9fa;
+            --success: #27ae60;
+        }
         
-        body { margin: 0; padding: 0; background: var(--bg-gray); font-family: 'Assistant', sans-serif; -webkit-tap-highlight-color: transparent; padding-bottom: 120px; /* Space for bottom bar */ }
-
-        /* --- 1. Admin Panel (Desktop mostly) --- */
-        #adminPanel {
-            background: #2c3e50; color: white; padding: 20px;
-            border-bottom: 5px solid var(--theme-gold);
-        }
-        .admin-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
-        .admin-input { flex: 1; padding: 12px; border-radius: 8px; border: none; font-size: 16px; min-width: 150px; }
-        .btn-generate { 
-            background: var(--theme-gold); color: black; padding: 15px; width: 100%;
-            border: none; font-weight: bold; cursor: pointer; border-radius: 8px; font-size: 18px; margin-top: 10px;
-        }
-
-        /* --- 2. The Document (Paper) --- */
-        .page-container {
-            background: white; 
-            width: 100%; max-width: 210mm; /* Max width for desktop */
-            min-height: 297mm; 
-            margin: 10px auto;
-            padding: 15mm; 
-            box-sizing: border-box;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: relative;
-        }
-
-        /* Typography */
-        h1 { text-align: center; text-decoration: underline; font-size: 22px; margin-bottom: 5px; }
-        .sub-header { text-align: center; font-size: 14px; color: #666; margin-bottom: 20px; }
-        .section-header { 
-            font-weight: bold; margin-top: 20px; margin-bottom: 8px; font-size: 16px; 
-            background: #fdfdfd; border-right: 4px solid var(--theme-gold); padding-right: 8px;
-        }
-        .contract-text { font-size: 15px; line-height: 1.6; text-align: justify; }
-        .contract-text li { margin-bottom: 8px; }
-        .data-field { font-weight: bold; border-bottom: 1px dashed #000; padding: 0 5px; }
-
-        /* --- 3. Signature & Stamp Area --- */
-        .signatures-area {
-            margin-top: 40px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 30px;
-        }
-        .sig-block { width: 45%; text-align: center; position: relative; min-width: 140px; }
+        body { margin: 0; padding: 0; font-family: 'Assistant', sans-serif; background: var(--light); color: #333; }
         
-        .stamp-img { width: 120px; position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); mix-blend-mode: multiply; pointer-events: none; }
+        /* --- 1. Admin Panel --- */
+        #adminView { 
+            max-width: 600px; margin: 20px auto; background: white; padding: 20px; 
+            border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: block;
+        }
+        .admin-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .input-field { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
         
-        /* The "Click to Sign" Button on the Document */
-        .btn-sign-trigger {
-            background: #fff; border: 2px dashed red; color: red;
-            padding: 15px 10px; width: 100%; font-weight: bold; font-size: 14px;
-            cursor: pointer; border-radius: 8px; margin-top: 10px;
+        /* Text Editor Style */
+        .text-editor {
+            width: 100%; height: 200px; padding: 10px; border: 1px solid #ccc; border-radius: 8px;
+            font-family: 'Assistant', sans-serif; font-size: 14px; line-height: 1.5; resize: vertical;
+            background: #fafafa; margin-bottom: 10px;
         }
-        .final-signature-img { max-width: 100%; max-height: 80px; display: none; margin: 0 auto; }
+        .toggle-edit-btn {
+            background: #eee; color: #333; border: none; padding: 8px; width: 100%;
+            cursor: pointer; font-weight: bold; border-radius: 5px; margin-bottom: 10px;
+        }
 
-        /* --- 4. POPUP MODAL (The Signature Pad) --- */
-        .modal {
-            display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.85); align-items: center; justify-content: center;
+        .btn-main { 
+            width: 100%; padding: 15px; background: var(--primary); border: none; 
+            border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; color: black;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .modal-content {
-            background-color: #fff; width: 95%; max-width: 500px; border-radius: 12px; padding: 15px;
-            text-align: center; position: relative;
-        }
-        .modal-header { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #333; }
-        canvas { 
-            border: 2px solid #ddd; border-radius: 8px; background: #fafafa; 
-            width: 100%; height: 200px; touch-action: none; cursor: crosshair;
-        }
-        .modal-buttons { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-modal { flex: 1; padding: 12px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .btn-confirm { background: var(--btn-green); color: white; }
-        .btn-clear { background: #e74c3c; color: white; }
-        .btn-close { position: absolute; top: 10px; left: 15px; font-size: 24px; color: #999; cursor: pointer; }
 
-        /* --- 5. Employee Bottom Bar (Sticky) --- */
-        #employeeBar {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: white; padding: 15px; box-shadow: 0 -2px 20px rgba(0,0,0,0.2);
-            z-index: 5000; display: none; /* Hidden for Admin */
-            display: flex; flex-direction: column; gap: 10px;
+        /* --- 2. Employee Wizard --- */
+        #employeeView { display: none; height: 100vh; flex-direction: column; }
+        .wizard-header { background: var(--dark); color: white; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; position: sticky; top: 0; z-index: 100; }
+        .step-container { flex: 1; padding: 20px; overflow-y: auto; display: none; }
+        .step-container.active { display: block; animation: fadeIn 0.3s; }
+        .step-title { font-size: 22px; font-weight: bold; margin-bottom: 10px; text-align: center; }
+        .step-desc { text-align: center; color: #666; margin-bottom: 30px; }
+        .info-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .info-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 10px 0; }
+        .info-label { font-weight: bold; color: #555; }
+        
+        .big-btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%; padding: 20px; margin-bottom: 15px;
+            border: 2px dashed #ccc; border-radius: 12px; background: white;
+            font-size: 18px; font-weight: bold; color: #555; cursor: pointer;
         }
-        .action-row { display: flex; gap: 10px; }
-        .btn-app { 
-            flex: 1; padding: 12px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; 
-            display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-decoration: none;
+        .big-btn.done { border-color: var(--success); color: var(--success); background: #e8f8f5; border-style: solid; }
+        
+        .nav-bar { padding: 15px; background: white; border-top: 1px solid #eee; display: flex; justify-content: space-between; gap: 10px; }
+        .nav-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; }
+        .btn-next { background: var(--dark); color: white; }
+        .btn-prev { background: #eee; color: #333; }
+
+        /* --- 3. Signature Modal --- */
+        #sigModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: none; flex-direction: column; justify-content: center; padding: 10px; box-sizing: border-box; }
+        .modal-box { background: white; padding: 10px; border-radius: 10px; height: 70%; display: flex; flex-direction: column; }
+        canvas { flex: 1; width: 100%; background: #f0f0f0; border: 2px solid #ccc; touch-action: none; border-radius: 5px; }
+        .sig-toolbar { padding-top: 10px; display: flex; gap: 10px; }
+
+        /* --- 4. Final Preview (A4) --- */
+        #previewContainer { display: none; background: #555; padding: 10px; min-height: 100vh; }
+        .a4-page {
+            background: white; width: 210mm; min-height: 297mm; margin: 0 auto; padding: 20mm;
+            box-sizing: border-box; position: relative; 
         }
-        .btn-upload { background: var(--btn-blue); color: white; }
-        .btn-save { background: var(--btn-green); color: white; }
+        /* Make content editable look normal */
+        [contenteditable="true"] { outline: none; }
+        [contenteditable="true"]:hover { background: #fffbe6; cursor: text; }
 
-        /* --- 6. ID Card Preview --- */
-        .id-preview-section { margin-top: 40px; page-break-before: always; display: none; text-align: center; }
-        .id-img-display { max-width: 90%; border: 1px solid #eee; margin: 10px auto; display: block; border-radius: 8px; }
+        @media screen and (max-width: 800px) { .a4-page { width: 100%; height: auto; padding: 15mm; } }
 
-        /* --- Print Styles --- */
         @media print {
-            #adminPanel, #employeeBar, .modal, .btn-sign-trigger { display: none !important; }
-            body { background: white; padding: 0; }
-            .page-container { margin: 0; box-shadow: none; padding: 10mm; width: 100%; max-width: 100%; }
-            .id-preview-section { display: block !important; }
-            /* Footer on every page */
-            .footer-print {
-                position: fixed; bottom: 0; left: 0; right: 0; height: 30px;
-                text-align: center; font-size: 10px; color: #777; border-top: 1px solid #ddd; padding-top: 5px; background: white;
-            }
+            #adminView, #employeeView, .nav-bar, .edit-hint { display: none !important; }
+            #previewContainer { display: block !important; background: white; padding: 0; }
+            .a4-page { width: 100%; margin: 0; box-shadow: none; padding: 20mm; page-break-after: always; }
+            .id-page { page-break-before: always; text-align: center; }
+            .footer { position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; border-top: 1px solid #ccc; padding-top: 10px; background: white; }
+            [contenteditable="true"]:hover { background: none; }
         }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div id="adminPanel">
-        <h2 style="margin:0 0 10px 0;">👮‍♂️ יצירת קישור לעובד</h2>
-        <div class="admin-row">
-            <input type="text" id="adminName" class="admin-input" placeholder="שם העובד">
-            <input type="text" id="adminID" class="admin-input" placeholder="ת.ז">
+    <div id="adminView">
+        <div class="admin-header">
+            <img src="logo.jpg" style="max-width: 150px;">
+            <h3>מערכת חוזים חכמה (למנהל)</h3>
         </div>
-        <div class="admin-row">
-            <input type="number" id="adminSalary" class="admin-input" placeholder="שכר (35)" value="35">
-            <input type="text" id="adminScope" class="admin-input" placeholder="היקף משרה" value="משמרות">
+        
+        <div class="input-group">
+            <label>שם העובד</label>
+            <input type="text" id="admName" class="input-field" placeholder="לדוגמה: ישראל ישראלי">
         </div>
-        <div class="admin-row">
-            <input type="date" id="adminDate" class="admin-input">
+        <div class="input-group">
+            <label>תעודת זהות</label>
+            <input type="tel" id="admID" class="input-field" placeholder="מספר זהות">
         </div>
-        <button class="btn-generate" onclick="generateLink()">🔗 צור קישור ושליחה בוואטסאפ</button>
-        <div id="linkOutput" style="background:white; color:black; padding:10px; display:none; margin-top:10px; border-radius:8px; word-break: break-all;"></div>
+        <div class="input-group">
+            <div style="display:flex; gap:10px;">
+                <div style="flex:1">
+                    <label>שכר לשעה</label>
+                    <input type="number" id="admSalary" class="input-field" value="35">
+                </div>
+                <div style="flex:1">
+                    <label>משרה</label>
+                    <input type="text" id="admScope" class="input-field" value="משמרות">
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <button class="toggle-edit-btn" onclick="toggleEditor()">📝 לחץ כאן לעריכת תוכן החוזה (מתקדם)</button>
+            <div id="editorContainer" style="display:none;">
+                <label>תוכן החוזה (HTML):</label>
+                <textarea id="contractBodyInput" class="text-editor">
+<h4 style="border-bottom:1px solid #ccc;">1. עיקרי ההסכם</h4>
+<ul>
+    <li>העובד יועסק בתפקיד מוכר / יועץ מכירות.</li>
+    <li>השכר השעתי: <strong>{{SALARY}} ₪</strong>.</li>
+    <li>היקף המשרה: {{SCOPE}}.</li>
+</ul>
+
+<h4 style="border-bottom:1px solid #ccc;">2. הצהרות והתחייבויות</h4>
+<ul>
+    <li>העובד מצהיר על כשירותו לעבודה ומתחייב לשמור סודיות.</li>
+    <li>תנאים סוציאליים (פנסיה, הבראה, חופשה) ישולמו כחוק.</li>
+    <li>הודעה מוקדמת לסיום עבודה תינתן בכתב ע"פ חוק.</li>
+</ul>
+<p>העובד מתחייב למלא את תפקידו ביושר ובמסירות.</p>
+                </textarea>
+                <small style="color:#666;">ניתן לשנות את המלל. שים לב: {{SALARY}} ו-{{SCOPE}} יוחלפו אוטומטית בנתונים שהזנת.</small>
+            </div>
+        </div>
+        
+        <button class="btn-main" onclick="createLink()">🔗 צור קישור ושלח לעובד</button>
+        <div id="linkResult" style="margin-top:15px; word-break:break-all; display:none; background:#f0f0f0; padding:10px; border-radius:5px;"></div>
     </div>
 
-    <div class="page-container">
-        
-        <div style="text-align:center;">
-            <img src="logo.jpg" style="width: 150px;">
-        </div>
-        
-        <h1>הסכם עבודה אישי</h1>
-        <div class="sub-header">נערך בחדרה ביום <span id="dispDate" class="data-field">__/__/____</span></div>
+    <div id="employeeView">
+        <div class="wizard-header">MAD PARFUMEUR - הסכם עבודה</div>
 
-        <div class="contract-text">
-            <p><strong>בין: חברת מאד פרפיום בע"מ (MAD PARFUMEUR)</strong>, ח.פ 515456093 (להלן: "<strong>החברה</strong>") מצד אחד;</p>
-            <p><strong>לבין:</strong> <span id="dispName" class="data-field" contenteditable="true">_____</span> ת.ז <span id="dispID" class="data-field" contenteditable="true">_____</span> (להלן: "<strong>העובד</strong>") מצד שני.</p>
-
-            <div class="section-header">1. תפקיד ושכר</div>
-            <ul>
-                <li>העובד יועסק בתפקיד: <strong>מוכר / יועץ מכירות</strong>.</li>
-                <li>שכר הבסיס: <strong><span id="dispSalary" class="data-field">35</span> ₪ לשעה</strong> (ברוטו).</li>
-                <li>היקף המשרה: <span id="dispScope" class="data-field">משמרות</span>.</li>
-            </ul>
-
-            <div class="section-header">2. תקופת העסקה</div>
-            <ul>
-                <li>תחילת עבודה: מיום החתימה. תקופת ניסיון: 3 חודשים.</li>
-                <li>העבודה בהתאם לסידור עבודה שבועי.</li>
-            </ul>
-
-            <div class="section-header">3. תנאים סוציאליים</div>
-            <ul>
-                <li>נסיעות והבראה ישולמו כדין.</li>
-                <li>הפרשות לפנסיה ולפיצויים יבוצעו לאחר 6 חודשים (או ע"פ רצף ביטוחי).</li>
-                <li>ימי חופשה ומחלה יצברו ע"פ חוק.</li>
-            </ul>
-
-            <div class="section-header">4. סודיות</div>
-            <ul>
-                <li>העובד מתחייב לשמור על סודיות מוחלטת בכל הנוגע ללקוחות ונהלי החברה.</li>
-            </ul>
-
-            <div class="section-header">5. סיום העסקה</div>
-            <ul>
-                <li>הודעה מוקדמת תינתן בכתב ע"י כל צד בהתאם לחוק.</li>
-                <li>במקרה של עבירת משמעת חמורה, רשאי המעסיק לסיים את העסקה לאלתר.</li>
-            </ul>
-        </div>
-
-        <div class="signatures-area">
-            <div class="sig-block">
-                <img src="signther.jpg" class="stamp-img">
-                <div style="font-weight:bold; margin-bottom:30px;">המעסיק</div>
-                <div style="border-top:1px solid #000;">חתימה וחותמת</div>
+        <div id="step1" class="step-container active">
+            <div class="step-title">שלום, <span id="dispNameHeader"></span></div>
+            <div class="step-desc">אנא וודא שפרטי ההעסקה נכונים.</div>
+            
+            <div class="info-card">
+                <div class="info-row"><span class="info-label">תעודת זהות:</span><span id="dispID"></span></div>
+                <div class="info-row"><span class="info-label">שכר לשעה:</span><span id="dispSalary"></span> ₪</div>
+                <div class="info-row"><span class="info-label">היקף משרה:</span><span id="dispScope"></span></div>
+                <div class="info-row"><span class="info-label">תאריך:</span><span id="dispDate"></span></div>
             </div>
+        </div>
 
-            <div class="sig-block">
-                <button class="btn-sign-trigger" onclick="openSignatureModal()">
-                    <i class="fas fa-pen"></i> לחץ כאן לחתימה
-                </button>
-                <img id="finalSigImg" class="final-signature-img">
+        <div id="step2" class="step-container">
+            <div class="step-title">חתימה דיגיטלית</div>
+            <div class="step-desc">לחץ על הכפתור למטה כדי לחתום.</div>
+            <button class="big-btn" id="btnSignTrigger" onclick="openSigPad()"><i class="fas fa-pen-nib"></i> לחץ כאן לחתימה</button>
+            <img id="previewSig" style="max-width:100%; display:none; margin:10px auto; border:1px solid #eee;">
+        </div>
+
+        <div id="step3" class="step-container">
+            <div class="step-title">צילום תעודה</div>
+            <div class="step-desc">חובה לצרף צילום תעודת זהות וספח.</div>
+            <label class="big-btn" id="btnUploadFront">
+                <i class="fas fa-id-card"></i> צלם תעודה (קדמי)
+                <input type="file" hidden accept="image/*" onchange="handleImg(this, 'imgFront', 'btnUploadFront')">
+            </label>
+            <label class="big-btn" id="btnUploadBack">
+                <i class="fas fa-file-alt"></i> צלם ספח
+                <input type="file" hidden accept="image/*" onchange="handleImg(this, 'imgBack', 'btnUploadBack')">
+            </label>
+        </div>
+
+        <div class="nav-bar">
+            <button class="nav-btn btn-prev" onclick="prevStep()" id="btnPrev" style="display:none;">חזור</button>
+            <button class="nav-btn btn-next" onclick="nextStep()" id="btnNext">הבא</button>
+        </div>
+    </div>
+
+    <div id="sigModal">
+        <div class="modal-box">
+            <div style="text-align:center; font-weight:bold; margin-bottom:10px;">חתום בתוך המסגרת הלבנה</div>
+            <canvas id="theCanvas"></canvas>
+            <div class="sig-toolbar">
+                <button class="nav-btn btn-prev" onclick="clearPad()">נקה</button>
+                <button class="nav-btn btn-next" style="background:var(--success);" onclick="savePad()">אישור</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="previewContainer">
+        <div class="edit-hint" style="background:#fff3cd; color:#856404; padding:10px; text-align:center; margin-bottom:10px; border-radius:5px;">
+            <i class="fas fa-info-circle"></i> ניתן ללחוץ על הטקסט כדי לתקן שגיאות לפני השמירה!
+        </div>
+
+        <div class="a4-page">
+            <div style="text-align:center;">
+                <img src="logo.jpg" style="width:180px;">
+                <h2 style="text-decoration:underline; margin-bottom:5px;">הסכם עבודה אישי</h2>
+            </div>
+            
+            <div contenteditable="true" style="font-size:14px; line-height:1.6; text-align:justify;">
+                <p><strong>שנערך ונחתם ביום:</strong> <span id="finalDate"></span></p>
+                <p><strong>בין: חברת מאד פרפיום בע"מ</strong> (להלן: "המעסיק") מצד אחד;<br>
+                <strong>לבין:</strong> <span id="finalName"></span> ת.ז <span id="finalID"></span> (להלן: "העובד") מצד שני.</p>
                 
-                <div style="margin-top:5px; border-top:1px solid #000;">חתימת העובד</div>
+                <div id="finalContractBody"></div>
+
+                <div style="margin-top:50px; display:flex; justify-content:space-between; align-items:flex-end;">
+                    <div style="text-align:center;">
+                        <img src="signther.jpg" style="width:100px; mix-blend-mode:multiply;"><br>
+                        <strong>המעסיק</strong>
+                    </div>
+                    <div style="text-align:center;">
+                        <img id="finalSigImage" style="max-height:80px;"><br>
+                        <strong>חתימת העובד</strong>
+                    </div>
+                </div>
             </div>
+            <div class="footer">MAD PARFUMEUR LTD | 515456093</div>
         </div>
 
-        <div id="idSection" class="id-preview-section">
-            <h2 style="text-decoration:underline;">נספח: מסמכים מזהים</h2>
-            <p>צילום תעודת זהות וספח כפי שהועלו ע"י העובד:</p>
-            <img id="imgIdFront" class="id-img-display">
-            <img id="imgIdBack" class="id-img-display">
-        </div>
-
-        <div class="footer-print">MAD PARFUMEUR LTD | 515456093 | www.madperfume.co.il</div>
-    </div>
-
-    <div id="employeeBar">
-        <div style="text-align:center; font-weight:bold; font-size:14px; margin-bottom:5px;">חובה לצרף צילומים לפני השמירה:</div>
-        <div class="action-row">
-            <label class="btn-app btn-upload">
-                <i class="fas fa-id-card"></i> תעודה
-                <input type="file" hidden accept="image/*" onchange="handleFile(this, 'imgIdFront')">
-            </label>
-            <label class="btn-app btn-upload">
-                <i class="fas fa-file-alt"></i> ספח
-                <input type="file" hidden accept="image/*" onchange="handleFile(this, 'imgIdBack')">
-            </label>
-        </div>
-        <button class="btn-app btn-save" onclick="finishAndPrint()">
-            <i class="fas fa-check-circle"></i> אישור ושמירה (PDF)
-        </button>
-    </div>
-
-    <div id="sigModal" class="modal">
-        <div class="modal-content">
-            <div class="btn-close" onclick="closeModal()">&times;</div>
-            <div class="modal-header">נא לחתום בתוך המסגרת:</div>
-            
-            <canvas id="sigCanvas"></canvas>
-            
-            <div class="modal-buttons">
-                <button class="btn-modal btn-clear" onclick="clearCanvas()">נקה (Clear)</button>
-                <button class="btn-modal btn-confirm" onclick="saveSignature()">אישור (Confirm)</button>
+        <div class="a4-page id-page">
+            <h3>נספח: מסמכים מזהים</h3>
+            <div style="margin-top:20px;">
+                <img id="finalImgFront" style="max-width:90%; border:1px solid #ccc; margin-bottom:20px;">
+                <br>
+                <img id="finalImgBack" style="max-width:90%; border:1px solid #ccc;">
             </div>
         </div>
     </div>
 
     <script>
-        // --- 1. Initialization ---
+        let currentStep = 1;
+        let empData = {};
+        let sigDataUrl = null;
+        let imgFrontUrl = null;
+        let imgBackUrl = null; // Add image back url variable
+
+        // On Load
         window.onload = function() {
             const params = new URLSearchParams(window.location.search);
-            document.getElementById('adminDate').valueAsDate = new Date();
-
-            if(params.has('data')) {
-                // Employee View
-                document.getElementById('adminPanel').style.display = 'none';
-                document.getElementById('employeeBar').style.display = 'flex';
+            if(params.has('d')) {
+                // Employee Mode
+                document.getElementById('adminView').style.display = 'none';
+                document.getElementById('employeeView').style.display = 'flex';
                 
                 try {
-                    const data = JSON.parse(decodeURIComponent(escape(atob(params.get('data')))));
-                    document.getElementById('dispName').innerText = data.name;
-                    document.getElementById('dispID').innerText = data.id;
-                    document.getElementById('dispDate').innerText = data.date;
-                    document.getElementById('dispSalary').innerText = data.salary;
-                    document.getElementById('dispScope').innerText = data.scope;
-                } catch(e) { console.log(e); }
-            } else {
-                // Admin View
-                document.getElementById('dispDate').innerText = new Date().toLocaleDateString('he-IL');
+                    const json = decodeURIComponent(escape(atob(params.get('d'))));
+                    empData = JSON.parse(json);
+                    
+                    // Fill Data
+                    document.getElementById('dispNameHeader').innerText = empData.n.split(' ')[0];
+                    document.getElementById('dispID').innerText = empData.i;
+                    document.getElementById('dispSalary').innerText = empData.s;
+                    document.getElementById('dispScope').innerText = empData.sc;
+                    document.getElementById('dispDate').innerText = new Date().toLocaleDateString('he-IL');
+
+                    document.getElementById('finalName').innerText = empData.n;
+                    document.getElementById('finalID').innerText = empData.i;
+                    document.getElementById('finalDate').innerText = new Date().toLocaleDateString('he-IL');
+
+                    // Fill Body with Replacements
+                    let body = empData.body;
+                    body = body.replace(/{{SALARY}}/g, empData.s);
+                    body = body.replace(/{{SCOPE}}/g, empData.sc);
+                    document.getElementById('finalContractBody').innerHTML = body;
+
+                } catch(e) { alert('קישור לא תקין'); }
             }
         };
 
-        // --- 2. Admin Logic ---
-        function generateLink() {
+        // Admin: Toggle Editor
+        function toggleEditor() {
+            const el = document.getElementById('editorContainer');
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Admin: Generate Link
+        function createLink() {
             const data = {
-                name: document.getElementById('adminName').value,
-                id: document.getElementById('adminID').value,
-                date: document.getElementById('adminDate').value.split('-').reverse().join('/'),
-                salary: document.getElementById('adminSalary').value,
-                scope: document.getElementById('adminScope').value
+                n: document.getElementById('admName').value,
+                i: document.getElementById('admID').value,
+                s: document.getElementById('admSalary').value,
+                sc: document.getElementById('admScope').value,
+                body: document.getElementById('contractBodyInput').value // Get custom text
             };
             
-            if(!data.name) { alert("נא למלא שם"); return; }
-
-            const str = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
-            const link = window.location.href.split('?')[0] + '?data=' + str;
+            if(!data.n || !data.i) return alert('נא למלא פרטים');
             
-            const out = document.getElementById('linkOutput');
-            out.style.display = 'block';
-            out.innerHTML = `<strong>שלח לעובד:</strong><br><a href="${link}">${link}</a>`;
-            navigator.clipboard.writeText(link).then(() => alert("הקישור הועתק!"));
+            // Encode
+            const str = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+            const link = window.location.href.split('?')[0] + '?d=' + str;
+            
+            const res = document.getElementById('linkResult');
+            res.style.display = 'block';
+            res.innerHTML = `<strong>שלח:</strong><br><a href="${link}">${link}</a>`;
+            navigator.clipboard.writeText(link);
+            alert('הקישור הועתק!');
         }
 
-        // --- 3. Signature Modal Logic ---
-        const modal = document.getElementById('sigModal');
-        const canvas = document.getElementById('sigCanvas');
+        // Wizard
+        function nextStep() {
+            if(currentStep === 2 && !sigDataUrl) return alert('חובה לחתום');
+            if(currentStep === 3) {
+                if(!imgFrontUrl) return alert('חובה לצרף תעודה');
+                
+                // Show Final Preview
+                document.getElementById('employeeView').style.display = 'none';
+                document.getElementById('previewContainer').style.display = 'block';
+                setTimeout(() => window.print(), 800);
+                return;
+            }
+            document.getElementById('step'+currentStep).classList.remove('active');
+            currentStep++;
+            document.getElementById('step'+currentStep).classList.add('active');
+            
+            document.getElementById('btnPrev').style.display = 'block';
+            if(currentStep === 3) document.getElementById('btnNext').innerText = 'סיום ושמירה (PDF)';
+        }
+
+        function prevStep() {
+            document.getElementById('step'+currentStep).classList.remove('active');
+            currentStep--;
+            document.getElementById('step'+currentStep).classList.add('active');
+            if(currentStep === 1) document.getElementById('btnPrev').style.display = 'none';
+            document.getElementById('btnNext').innerText = 'הבא';
+        }
+
+        // Signature
+        const sigModal = document.getElementById('sigModal');
+        const canvas = document.getElementById('theCanvas');
         const ctx = canvas.getContext('2d');
         let painting = false;
-        let isSigned = false;
 
         function resizeCanvas() {
-            // Make canvas high resolution
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
+            canvas.width = canvas.parentElement.offsetWidth;
+            canvas.height = canvas.parentElement.offsetHeight - 60;
         }
 
-        function openSignatureModal() {
-            modal.style.display = 'flex';
+        function openSigPad() {
+            sigModal.style.display = 'flex';
             resizeCanvas();
         }
 
-        function closeModal() {
-            modal.style.display = 'none';
-        }
-
-        // Drawing Logic
-        function startPosition(e) { painting = true; draw(e); }
-        function endPosition() { painting = false; ctx.beginPath(); }
+        function startDraw(e) { painting = true; draw(e); }
+        function endDraw() { painting = false; ctx.beginPath(); }
         function draw(e) {
-            if (!painting) return;
-            // Prevent scrolling when touching canvas
-            if(e.type.includes('touch')) e.preventDefault(); 
-            
+            if(!painting) return;
+            e.preventDefault();
             const rect = canvas.getBoundingClientRect();
             const x = (e.clientX || e.touches[0].clientX) - rect.left;
             const y = (e.clientY || e.touches[0].clientY) - rect.top;
-
-            ctx.lineWidth = 3;
-            ctx.lineCap = 'round';
-            ctx.strokeStyle = '#000';
-
-            ctx.lineTo(x, y);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(x, y);
+            
+            ctx.lineWidth = 3; ctx.lineCap = 'round';
+            ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
         }
 
-        canvas.addEventListener('mousedown', startPosition);
-        canvas.addEventListener('mouseup', endPosition);
+        canvas.addEventListener('touchstart', startDraw, {passive:false});
+        canvas.addEventListener('touchend', endDraw);
+        canvas.addEventListener('touchmove', draw, {passive:false});
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mouseup', endDraw);
         canvas.addEventListener('mousemove', draw);
-        
-        canvas.addEventListener('touchstart', startPosition, {passive: false});
-        canvas.addEventListener('touchend', endPosition);
-        canvas.addEventListener('touchmove', draw, {passive: false});
 
-        function clearCanvas() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        function clearPad() { ctx.clearRect(0,0,canvas.width,canvas.height); }
+        function savePad() {
+            sigDataUrl = canvas.toDataURL();
+            document.getElementById('previewSig').src = sigDataUrl;
+            document.getElementById('previewSig').style.display = 'block';
+            document.getElementById('finalSigImage').src = sigDataUrl;
+            document.getElementById('btnSignTrigger').classList.add('done');
+            document.getElementById('btnSignTrigger').innerHTML = '<i class="fas fa-check"></i> נחתם';
+            sigModal.style.display = 'none';
         }
 
-        function saveSignature() {
-            // Convert canvas to image
-            const dataUrl = canvas.toDataURL();
-            
-            // Show image, hide button
-            const img = document.getElementById('finalSigImg');
-            img.src = dataUrl;
-            img.style.display = 'block';
-            
-            document.querySelector('.btn-sign-trigger').style.display = 'none';
-            isSigned = true;
-            closeModal();
-        }
-
-        // --- 4. File Upload Logic ---
-        let idUploaded = false;
-        function handleFile(input, imgId) {
-            if (input.files && input.files[0]) {
+        // Image
+        function handleImg(input, targetID, btnID) {
+            if(input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const img = document.getElementById(imgId);
-                    img.src = e.target.result;
-                    document.getElementById('idSection').style.display = 'block';
-                    idUploaded = true;
-                    // Visual feedback on button
-                    input.parentElement.style.background = '#27ae60';
-                    input.parentElement.innerHTML = '<i class="fas fa-check"></i> צורף בהצלחה';
-                };
+                    if (targetID === 'imgFront') imgFrontUrl = e.target.result; // Store URL
+                    else if (targetID === 'imgBack') imgBackUrl = e.target.result; // Store URL
+
+                    document.getElementById('final'+targetID.charAt(0).toUpperCase() + targetID.slice(1)).src = e.target.result;
+                    document.getElementById(btnID).classList.add('done');
+                    document.getElementById(btnID).innerHTML = '<i class="fas fa-check"></i> צורף';
+                }
                 reader.readAsDataURL(input.files[0]);
             }
-        }
-
-        // --- 5. Finish ---
-        function finishAndPrint() {
-            if(!isSigned) { alert("חובה לחתום על המסמך (לחץ על הכפתור האדום)"); return; }
-            if(!idUploaded) { if(!confirm("לא צירפת תעודת זהות. האם להמשיך?")) return; }
-            window.print();
         }
     </script>
 </body>
