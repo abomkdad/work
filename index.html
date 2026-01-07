@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAD Smart Contract - Editable</title>
+    <title>MAD Smart Contract</title>
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
@@ -26,35 +26,25 @@
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; margin-bottom: 5px; font-weight: bold; }
         .input-field { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
-        
-        /* Text Editor Style */
-        .text-editor {
-            width: 100%; height: 200px; padding: 10px; border: 1px solid #ccc; border-radius: 8px;
-            font-family: 'Assistant', sans-serif; font-size: 14px; line-height: 1.5; resize: vertical;
-            background: #fafafa; margin-bottom: 10px;
-        }
-        .toggle-edit-btn {
-            background: #eee; color: #333; border: none; padding: 8px; width: 100%;
-            cursor: pointer; font-weight: bold; border-radius: 5px; margin-bottom: 10px;
-        }
-
         .btn-main { 
             width: 100%; padding: 15px; background: var(--primary); border: none; 
             border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; color: black;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         /* --- 2. Employee Wizard --- */
         #employeeView { display: none; height: 100vh; flex-direction: column; }
         .wizard-header { background: var(--dark); color: white; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; position: sticky; top: 0; z-index: 100; }
+        
         .step-container { flex: 1; padding: 20px; overflow-y: auto; display: none; }
         .step-container.active { display: block; animation: fadeIn 0.3s; }
+
         .step-title { font-size: 22px; font-weight: bold; margin-bottom: 10px; text-align: center; }
         .step-desc { text-align: center; color: #666; margin-bottom: 30px; }
+
         .info-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .info-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 10px 0; }
         .info-label { font-weight: bold; color: #555; }
-        
+
         .big-btn {
             display: flex; align-items: center; justify-content: center; gap: 10px;
             width: 100%; padding: 20px; margin-bottom: 15px;
@@ -69,30 +59,24 @@
         .btn-prev { background: #eee; color: #333; }
 
         /* --- 3. Signature Modal --- */
-        #sigModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: none; flex-direction: column; justify-content: center; padding: 10px; box-sizing: border-box; }
-        .modal-box { background: white; padding: 10px; border-radius: 10px; height: 70%; display: flex; flex-direction: column; }
-        canvas { flex: 1; width: 100%; background: #f0f0f0; border: 2px solid #ccc; touch-action: none; border-radius: 5px; }
-        .sig-toolbar { padding-top: 10px; display: flex; gap: 10px; }
+        #sigModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: none; flex-direction: column; }
+        canvas { flex: 1; width: 100%; background: #fff; touch-action: none; cursor: crosshair; }
+        .sig-toolbar { padding: 10px; display: flex; gap: 10px; background: #eee; }
 
-        /* --- 4. Final Preview (A4) --- */
-        #previewContainer { display: none; background: #555; padding: 10px; min-height: 100vh; }
+        /* --- 4. Final Preview (Hidden A4) --- */
+        #previewContainer { display: none; background: #555; padding: 10px; }
         .a4-page {
             background: white; width: 210mm; min-height: 297mm; margin: 0 auto; padding: 20mm;
-            box-sizing: border-box; position: relative; 
+            box-sizing: border-box; position: relative;
         }
-        /* Make content editable look normal */
-        [contenteditable="true"] { outline: none; }
-        [contenteditable="true"]:hover { background: #fffbe6; cursor: text; }
-
         @media screen and (max-width: 800px) { .a4-page { width: 100%; height: auto; padding: 15mm; } }
 
         @media print {
-            #adminView, #employeeView, .nav-bar, .edit-hint { display: none !important; }
+            #adminView, #employeeView, .nav-bar { display: none !important; }
             #previewContainer { display: block !important; background: white; padding: 0; }
             .a4-page { width: 100%; margin: 0; box-shadow: none; padding: 20mm; page-break-after: always; }
             .id-page { page-break-before: always; text-align: center; }
             .footer { position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; border-top: 1px solid #ccc; padding-top: 10px; background: white; }
-            [contenteditable="true"]:hover { background: none; }
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -126,30 +110,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="input-group">
-            <button class="toggle-edit-btn" onclick="toggleEditor()">📝 לחץ כאן לעריכת תוכן החוזה (מתקדם)</button>
-            <div id="editorContainer" style="display:none;">
-                <label>תוכן החוזה (HTML):</label>
-                <textarea id="contractBodyInput" class="text-editor">
-<h4 style="border-bottom:1px solid #ccc;">1. עיקרי ההסכם</h4>
-<ul>
-    <li>העובד יועסק בתפקיד מוכר / יועץ מכירות.</li>
-    <li>השכר השעתי: <strong>{{SALARY}} ₪</strong>.</li>
-    <li>היקף המשרה: {{SCOPE}}.</li>
-</ul>
-
-<h4 style="border-bottom:1px solid #ccc;">2. הצהרות והתחייבויות</h4>
-<ul>
-    <li>העובד מצהיר על כשירותו לעבודה ומתחייב לשמור סודיות.</li>
-    <li>תנאים סוציאליים (פנסיה, הבראה, חופשה) ישולמו כחוק.</li>
-    <li>הודעה מוקדמת לסיום עבודה תינתן בכתב ע"פ חוק.</li>
-</ul>
-<p>העובד מתחייב למלא את תפקידו ביושר ובמסירות.</p>
-                </textarea>
-                <small style="color:#666;">ניתן לשנות את המלל. שים לב: {{SALARY}} ו-{{SCOPE}} יוחלפו אוטומטית בנתונים שהזנת.</small>
-            </div>
-        </div>
         
         <button class="btn-main" onclick="createLink()">🔗 צור קישור ושלח לעובד</button>
         <div id="linkResult" style="margin-top:15px; word-break:break-all; display:none; background:#f0f0f0; padding:10px; border-radius:5px;"></div>
@@ -161,7 +121,6 @@
         <div id="step1" class="step-container active">
             <div class="step-title">שלום, <span id="dispNameHeader"></span></div>
             <div class="step-desc">אנא וודא שפרטי ההעסקה נכונים.</div>
-            
             <div class="info-card">
                 <div class="info-row"><span class="info-label">תעודת זהות:</span><span id="dispID"></span></div>
                 <div class="info-row"><span class="info-label">שכר לשעה:</span><span id="dispSalary"></span> ₪</div>
@@ -172,13 +131,13 @@
 
         <div id="step2" class="step-container">
             <div class="step-title">חתימה דיגיטלית</div>
-            <div class="step-desc">לחץ על הכפתור למטה כדי לחתום.</div>
+            <div class="step-desc">לחץ למטה כדי לחתום על המסך המלא.</div>
             <button class="big-btn" id="btnSignTrigger" onclick="openSigPad()"><i class="fas fa-pen-nib"></i> לחץ כאן לחתימה</button>
             <img id="previewSig" style="max-width:100%; display:none; margin:10px auto; border:1px solid #eee;">
         </div>
 
         <div id="step3" class="step-container">
-            <div class="step-title">צילום תעודה</div>
+            <div class="step-title">צילום מסמכים</div>
             <div class="step-desc">חובה לצרף צילום תעודת זהות וספח.</div>
             <label class="big-btn" id="btnUploadFront">
                 <i class="fas fa-id-card"></i> צלם תעודה (קדמי)
@@ -197,33 +156,39 @@
     </div>
 
     <div id="sigModal">
-        <div class="modal-box">
-            <div style="text-align:center; font-weight:bold; margin-bottom:10px;">חתום בתוך המסגרת הלבנה</div>
-            <canvas id="theCanvas"></canvas>
-            <div class="sig-toolbar">
-                <button class="nav-btn btn-prev" onclick="clearPad()">נקה</button>
-                <button class="nav-btn btn-next" style="background:var(--success);" onclick="savePad()">אישור</button>
-            </div>
+        <div style="padding:15px; background:#f8f9fa; border-bottom:1px solid #ddd; text-align:center; font-weight:bold;">חתום בתוך המסגרת הלבנה</div>
+        <canvas id="theCanvas"></canvas>
+        <div class="sig-toolbar">
+            <button class="nav-btn btn-prev" onclick="clearPad()">נקה</button>
+            <button class="nav-btn btn-next" style="background:var(--success);" onclick="savePad()">אישור חתימה</button>
         </div>
     </div>
 
     <div id="previewContainer">
-        <div class="edit-hint" style="background:#fff3cd; color:#856404; padding:10px; text-align:center; margin-bottom:10px; border-radius:5px;">
-            <i class="fas fa-info-circle"></i> ניתן ללחוץ על הטקסט כדי לתקן שגיאות לפני השמירה!
-        </div>
-
         <div class="a4-page">
             <div style="text-align:center;">
                 <img src="logo.jpg" style="width:180px;">
-                <h2 style="text-decoration:underline; margin-bottom:5px;">הסכם עבודה אישי</h2>
+                <h2 style="text-decoration:underline;">הסכם עבודה אישי</h2>
             </div>
             
-            <div contenteditable="true" style="font-size:14px; line-height:1.6; text-align:justify;">
+            <div style="font-size:14px; line-height:1.6; text-align:justify;">
                 <p><strong>שנערך ונחתם ביום:</strong> <span id="finalDate"></span></p>
                 <p><strong>בין: חברת מאד פרפיום בע"מ</strong> (להלן: "המעסיק") מצד אחד;<br>
                 <strong>לבין:</strong> <span id="finalName"></span> ת.ז <span id="finalID"></span> (להלן: "העובד") מצד שני.</p>
                 
-                <div id="finalContractBody"></div>
+                <h4 style="border-bottom:1px solid #ccc;">1. עיקרי ההסכם</h4>
+                <ul>
+                    <li>העובד יועסק בתפקיד מוכר / יועץ מכירות.</li>
+                    <li>השכר השעתי: <strong><span id="finalSalary"></span> ₪</strong>.</li>
+                    <li>היקף המשרה: <span id="finalScope"></span>.</li>
+                </ul>
+                
+                <h4 style="border-bottom:1px solid #ccc;">2. הצהרות והתחייבויות</h4>
+                <ul>
+                    <li>העובד מצהיר על כשירותו לעבודה ומתחייב לשמור סודיות.</li>
+                    <li>תנאים סוציאליים (פנסיה, הבראה, חופשה) ישולמו כחוק.</li>
+                    <li>הודעה מוקדמת לסיום עבודה תינתן בכתב ע"פ חוק.</li>
+                </ul>
 
                 <div style="margin-top:50px; display:flex; justify-content:space-between; align-items:flex-end;">
                     <div style="text-align:center;">
@@ -242,8 +207,7 @@
         <div class="a4-page id-page">
             <h3>נספח: מסמכים מזהים</h3>
             <div style="margin-top:20px;">
-                <img id="finalImgFront" style="max-width:90%; border:1px solid #ccc; margin-bottom:20px;">
-                <br>
+                <img id="finalImgFront" style="max-width:90%; border:1px solid #ccc; margin-bottom:20px;"><br>
                 <img id="finalImgBack" style="max-width:90%; border:1px solid #ccc;">
             </div>
         </div>
@@ -254,21 +218,17 @@
         let empData = {};
         let sigDataUrl = null;
         let imgFrontUrl = null;
-        let imgBackUrl = null; // Add image back url variable
+        let imgBackUrl = null;
 
-        // On Load
         window.onload = function() {
             const params = new URLSearchParams(window.location.search);
             if(params.has('d')) {
-                // Employee Mode
                 document.getElementById('adminView').style.display = 'none';
                 document.getElementById('employeeView').style.display = 'flex';
-                
                 try {
                     const json = decodeURIComponent(escape(atob(params.get('d'))));
                     empData = JSON.parse(json);
                     
-                    // Fill Data
                     document.getElementById('dispNameHeader').innerText = empData.n.split(' ')[0];
                     document.getElementById('dispID').innerText = empData.i;
                     document.getElementById('dispSalary').innerText = empData.s;
@@ -277,63 +237,44 @@
 
                     document.getElementById('finalName').innerText = empData.n;
                     document.getElementById('finalID').innerText = empData.i;
+                    document.getElementById('finalSalary').innerText = empData.s;
+                    document.getElementById('finalScope').innerText = empData.sc;
                     document.getElementById('finalDate').innerText = new Date().toLocaleDateString('he-IL');
-
-                    // Fill Body with Replacements
-                    let body = empData.body;
-                    body = body.replace(/{{SALARY}}/g, empData.s);
-                    body = body.replace(/{{SCOPE}}/g, empData.sc);
-                    document.getElementById('finalContractBody').innerHTML = body;
-
                 } catch(e) { alert('קישור לא תקין'); }
             }
         };
 
-        // Admin: Toggle Editor
-        function toggleEditor() {
-            const el = document.getElementById('editorContainer');
-            el.style.display = el.style.display === 'none' ? 'block' : 'none';
-        }
-
-        // Admin: Generate Link
         function createLink() {
             const data = {
                 n: document.getElementById('admName').value,
                 i: document.getElementById('admID').value,
                 s: document.getElementById('admSalary').value,
-                sc: document.getElementById('admScope').value,
-                body: document.getElementById('contractBodyInput').value // Get custom text
+                sc: document.getElementById('admScope').value
             };
+            if(!data.n || !data.i) return alert('נא למלא את כל השדות');
             
-            if(!data.n || !data.i) return alert('נא למלא פרטים');
-            
-            // Encode
             const str = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
             const link = window.location.href.split('?')[0] + '?d=' + str;
             
             const res = document.getElementById('linkResult');
             res.style.display = 'block';
-            res.innerHTML = `<strong>שלח:</strong><br><a href="${link}">${link}</a>`;
+            res.innerHTML = `<strong>שלח בוואטסאפ:</strong><br><a href="${link}">${link}</a>`;
             navigator.clipboard.writeText(link);
             alert('הקישור הועתק!');
         }
 
-        // Wizard
         function nextStep() {
             if(currentStep === 2 && !sigDataUrl) return alert('חובה לחתום');
             if(currentStep === 3) {
-                if(!imgFrontUrl) return alert('חובה לצרף תעודה');
-                
-                // Show Final Preview
+                if(!imgFrontUrl) return alert('חובה לצרף צילום תעודה');
                 document.getElementById('employeeView').style.display = 'none';
                 document.getElementById('previewContainer').style.display = 'block';
-                setTimeout(() => window.print(), 800);
+                setTimeout(() => window.print(), 500);
                 return;
             }
             document.getElementById('step'+currentStep).classList.remove('active');
             currentStep++;
             document.getElementById('step'+currentStep).classList.add('active');
-            
             document.getElementById('btnPrev').style.display = 'block';
             if(currentStep === 3) document.getElementById('btnNext').innerText = 'סיום ושמירה (PDF)';
         }
@@ -352,29 +293,19 @@
         const ctx = canvas.getContext('2d');
         let painting = false;
 
-        function resizeCanvas() {
-            canvas.width = canvas.parentElement.offsetWidth;
-            canvas.height = canvas.parentElement.offsetHeight - 60;
-        }
-
-        function openSigPad() {
-            sigModal.style.display = 'flex';
-            resizeCanvas();
-        }
-
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight - 100; }
+        function openSigPad() { sigModal.style.display = 'flex'; resizeCanvas(); }
+        function clearPad() { ctx.clearRect(0,0,canvas.width,canvas.height); }
+        
         function startDraw(e) { painting = true; draw(e); }
         function endDraw() { painting = false; ctx.beginPath(); }
         function draw(e) {
             if(!painting) return;
             e.preventDefault();
-            const rect = canvas.getBoundingClientRect();
-            const x = (e.clientX || e.touches[0].clientX) - rect.left;
-            const y = (e.clientY || e.touches[0].clientY) - rect.top;
-            
-            ctx.lineWidth = 3; ctx.lineCap = 'round';
-            ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
+            const x = (e.clientX || e.touches[0].clientX);
+            const y = (e.clientY || e.touches[0].clientY) - 50;
+            ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
         }
-
         canvas.addEventListener('touchstart', startDraw, {passive:false});
         canvas.addEventListener('touchend', endDraw);
         canvas.addEventListener('touchmove', draw, {passive:false});
@@ -382,28 +313,25 @@
         canvas.addEventListener('mouseup', endDraw);
         canvas.addEventListener('mousemove', draw);
 
-        function clearPad() { ctx.clearRect(0,0,canvas.width,canvas.height); }
         function savePad() {
             sigDataUrl = canvas.toDataURL();
             document.getElementById('previewSig').src = sigDataUrl;
             document.getElementById('previewSig').style.display = 'block';
             document.getElementById('finalSigImage').src = sigDataUrl;
             document.getElementById('btnSignTrigger').classList.add('done');
-            document.getElementById('btnSignTrigger').innerHTML = '<i class="fas fa-check"></i> נחתם';
+            document.getElementById('btnSignTrigger').innerHTML = '<i class="fas fa-check"></i> נחתם בהצלחה';
             sigModal.style.display = 'none';
         }
 
-        // Image
         function handleImg(input, targetID, btnID) {
             if(input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    if (targetID === 'imgFront') imgFrontUrl = e.target.result; // Store URL
-                    else if (targetID === 'imgBack') imgBackUrl = e.target.result; // Store URL
-
+                    if(targetID === 'imgFront') imgFrontUrl = e.target.result;
+                    if(targetID === 'imgBack') imgBackUrl = e.target.result;
                     document.getElementById('final'+targetID.charAt(0).toUpperCase() + targetID.slice(1)).src = e.target.result;
                     document.getElementById(btnID).classList.add('done');
-                    document.getElementById(btnID).innerHTML = '<i class="fas fa-check"></i> צורף';
+                    document.getElementById(btnID).innerHTML = '<i class="fas fa-check"></i> צורף בהצלחה';
                 }
                 reader.readAsDataURL(input.files[0]);
             }
