@@ -8,61 +8,61 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
-        :root { --primary: #D4AF37; --dark: #1a1a1a; --light: #f4f4f4; --green: #25D366; }
-        body { margin: 0; padding: 0; font-family: 'Assistant', sans-serif; background: var(--light); color: #333; padding-bottom: 80px; }
+        :root { --primary: #D4AF37; --dark: #1a1a1a; --light: #f4f4f4; --green: #27ae60; }
+        body { margin: 0; padding: 0; font-family: 'Assistant', sans-serif; background: var(--light); color: #333; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
         
-        /* --- Header --- */
-        .app-header { background: #fff; padding: 15px; text-align: center; border-bottom: 4px solid var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .app-header { background: #fff; padding: 15px; text-align: center; border-bottom: 4px solid var(--primary); }
         .logo { max-width: 120px; }
         
-        /* --- Container --- */
         .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
         .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border-top: 3px solid var(--dark); }
         .card-title { font-weight: bold; font-size: 18px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: var(--dark); }
 
-        /* --- Inputs --- */
         .input-row { display: flex; gap: 15px; flex-wrap: wrap; }
         .input-group { flex: 1; margin-bottom: 15px; min-width: 200px; }
         .label { display: block; font-size: 14px; margin-bottom: 8px; font-weight: bold; color: #555; }
         .input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; background: #fafafa; }
         .input:focus { border-color: var(--primary); background: #fff; outline: none; }
 
-        /* --- Corporate Contract Preview --- */
         .contract-box { 
-            height: 400px; overflow-y: auto; background: #fff; 
-            border: 1px solid #ccc; padding: 40px; 
-            font-family: 'David Libre', serif; /* Font used in legal docs */
-            font-size: 15px; line-height: 1.8; color: #000;
-            text-align: justify;
+            height: 350px; overflow-y: auto; background: #fff; border: 1px solid #ccc; padding: 20px; 
+            font-family: 'David Libre', serif; font-size: 15px; line-height: 1.8; text-align: justify;
         }
-        .contract-box h2 { text-align: center; text-decoration: underline; margin-bottom: 30px; font-size: 22px; }
-        .contract-box h3 { font-size: 16px; font-weight: bold; margin-top: 25px; margin-bottom: 10px; text-decoration: underline; }
-        .contract-box p, .contract-box li { margin-bottom: 8px; }
-        .contract-box ol { padding-right: 25px; }
+        .contract-box h2 { text-align: center; text-decoration: underline; margin-bottom: 20px; font-size: 20px; }
+        .contract-box h3 { font-size: 16px; font-weight: bold; margin-top: 20px; margin-bottom: 5px; text-decoration: underline; }
+        .contract-box ol { padding-right: 20px; }
         .fill-data { font-weight: bold; border-bottom: 1px dotted #000; padding: 0 5px; }
 
-        /* --- Buttons --- */
-        .btn { width: 100%; padding: 15px; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; }
+        .btn { width: 100%; padding: 15px; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-sig { background: white; border: 2px solid #333; color: #333; }
-        .btn-sig.done { background: #333; color: #fff; border-color: #333; }
+        .btn-sig.done { background: #333; color: #fff; }
         .btn-upload { background: #f0f0f0; color: #333; border: 1px solid #ccc; font-size: 14px; padding: 10px; }
         .btn-upload.done { background: var(--green); color: white; border-color: var(--green); }
-        .btn-save { background: var(--primary); color: #000; margin-top: 20px; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3); }
+        .btn-save { background: var(--primary); color: #000; margin-top: 20px; }
 
-        /* --- Signature Modal --- */
-        #sigModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; display: none; align-items: center; justify-content: center; }
-        .modal-content { background: white; width: 95%; max-width: 600px; height: 60vh; display: flex; flex-direction: column; border-radius: 10px; overflow: hidden; }
+        /* Signature Modal */
+        #sigModal { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.9); z-index: 5000; 
+            display: none; align-items: center; justify-content: center; 
+        }
+        .modal-content { 
+            background: white; width: 95%; height: 70%; 
+            display: flex; flex-direction: column; border-radius: 10px; overflow: hidden; 
+        }
         .modal-header { padding: 15px; background: #eee; text-align: center; font-weight: bold; }
-        canvas { flex: 1; background: #fff; cursor: crosshair; }
+        
+        /* Canvas Fix for Mobile */
+        canvas { 
+            flex: 1; background: #fff; cursor: crosshair; touch-action: none; /* يمنع تحرك الصفحة أثناء التوقيع */
+            width: 100%; height: 100%;
+        }
+        
         .modal-footer { padding: 15px; display: flex; gap: 10px; background: #eee; }
 
-        /* --- Print / PDF Styling --- */
+        /* Print Area */
         #printArea { display: none; }
-        .legal-page { 
-            width: 210mm; min-height: 297mm; margin: 0 auto; background: white; 
-            padding: 25mm 20mm; box-sizing: border-box; position: relative; 
-            font-family: 'David Libre', serif;
-        }
+        .legal-page { width: 210mm; min-height: 297mm; margin: 0 auto; background: white; padding: 25mm 20mm; position: relative; font-family: 'David Libre', serif; }
         
         @media print {
             body * { visibility: hidden; }
@@ -70,10 +70,7 @@
             #printArea { position: absolute; left: 0; top: 0; width: 100%; }
             .legal-page { margin: 0; box-shadow: none; page-break-after: always; }
             .btn, .no-print { display: none !important; }
-            
-            /* Legal Formatting for Print */
-            p { text-align: justify; }
-            li { text-align: justify; margin-bottom: 5px; }
+            p, li { text-align: justify; }
         }
     </style>
 </head>
@@ -81,7 +78,7 @@
 
     <div class="app-header">
         <img src="logo.jpg" class="logo" alt="MAD PARFUMEUR" onerror="this.style.display='none'">
-        <div style="font-size:14px; margin-top:5px; color:#777;">מערכת משאבי אנוש וחוזים</div>
+        <div style="font-size:14px; margin-top:5px; color:#777;">מערכת משאבי אנוש</div>
     </div>
 
     <div class="container">
@@ -90,11 +87,11 @@
             <div class="card-title">1. פרטי עובד (מלא את הפרטים)</div>
             <div class="input-row">
                 <div class="input-group">
-                    <span class="label">שם מלא (كما في الهوية):</span>
+                    <span class="label">שם מלא:</span>
                     <input type="text" id="inpName" class="input" placeholder="ישראל ישראלי" oninput="updateContract()">
                 </div>
                 <div class="input-group">
-                    <span class="label">מספר זהות (رقم الهوية):</span>
+                    <span class="label">מספר זהות:</span>
                     <input type="tel" id="inpID" class="input" placeholder="000000000" oninput="updateContract()">
                 </div>
             </div>
@@ -110,91 +107,70 @@
                 <h2>הסכם העסקה אישי ומיוחד</h2>
                 <p style="text-align:center; font-size:14px;">נערך ונחתם ביום: <strong><span id="dateDisplay"></span></strong></p>
                 
-                <p><strong>בין: חברת מאד פרפיום בע"מ (ח.פ 515456093)</strong><br>
-                מרחוב הנשיא 1, חדרה (להלן: "<strong>החברה</strong>" או "<strong>המעסיק</strong>") <u>מצד אחד</u>;</p>
-                
-                <p><strong>לבין: <span class="fill-data" id="outName">_______</span></strong>, ת.ז <strong><span class="fill-data" id="outID">_______</span></strong><br>
-                (להלן: "<strong>העובד</strong>") <u>מצד שני</u>.</p>
+                <p><strong>בין: חברת מאד פרפיום בע"מ (ח.פ 515456093)</strong> (להלן: "<strong>החברה</strong>") <u>מצד אחד</u>;</p>
+                <p><strong>לבין: <span class="fill-data" id="outName">_______</span></strong>, ת.ז <strong><span class="fill-data" id="outID">_______</span></strong> (להלן: "<strong>העובד</strong>") <u>מצד שני</u>.</p>
 
                 <p><strong>הואיל</strong> והחברה מעוניינת להעסיק את העובד;<br>
-                <strong>והואיל</strong> והעובד מעוניין לעבוד בחברה בתפקיד ובמשרה כמפורט בהסכם זה;<br>
-                <strong>והואיל</strong> והצדדים מעוניינים להסדיר את יחסי העבודה ביניהם;</p>
+                <strong>והואיל</strong> והעובד מעוניין לעבוד בחברה בתפקיד ובמשרה כמפורט בהסכם זה;</p>
                 
-                <p style="text-align:center; font-weight:bold; margin-top:20px;">לפיכך הוסכם, הוצהר והותנה בין הצדדים כדלקמן:</p>
-
-                <h3>1. מבוא ופרשנות</h3>
+                <h3>1. תפקיד העובד</h3>
                 <ol>
-                    <li>המבוא להסכם זה מהווה חלק בלתי נפרד ממנו.</li>
-                    [cite_start]<li>כותרות הסעיפים נועדו לנוחות בלבד ולא ישמשו לפרשנות ההסכם[cite: 9].</li>
+                    <li>העובד יועסק בתפקיד <strong>יועץ מכירות / מנהל משמרת</strong>.</li>
+                    <li>העובד מתחייב לבצע את תפקידו במיומנות, במסירות, ובנאמנות.</li>
                 </ol>
 
-                <h3>2. תפקיד העובד</h3>
+                <h3>2. תקופת ההסכם</h3>
                 <ol>
-                    [cite_start]<li>העובד יועסק בתפקיד <strong>יועץ מכירות / מנהל משמרת</strong>[cite: 10].</li>
-                    [cite_start]<li>העובד מתחייב לבצע את תפקידו במיומנות, במסירות, ובנאמנות, ולמלא אחר הוראות הממונים עליו[cite: 23].</li>
-                    [cite_start]<li>החברה רשאית לשנות את הגדרת התפקיד או להטיל על העובד משימות נוספות בהתאם לצרכי העבודה[cite: 11].</li>
+                    <li>תקופת העסקתו של העובד היא לתקופה בלתי קצובה.</li>
+                    <li><strong>תקופת ניסיון:</strong> 6 החודשים הראשונים ייחשבו כתקופת ניסיון.</li>
                 </ol>
 
-                <h3>3. תקופת ההסכם ותקופת ניסיון</h3>
+                <h3>3. היקף המשרה ושעות עבודה</h3>
                 <ol>
-                    <li>תקופת העסקתו של העובד היא לתקופה בלתי קצובה החל ממועד החתימה.</li>
-                    <li><strong>תקופת ניסיון:</strong> 6 החודשים הראשונים לעבודתו של העובד ייחשבו כתקופת ניסיון. במהלך תקופה זו תבחן החברה את התאמתו של העובד לתפקיד.</li>
+                    <li>העובד יעבוד בהיקף משרה של משמרות בהתאם לסידור עבודה שבועי.</li>
+                    <li>לא יבוצעו שעות נוספות אלא באישור מראש ובכתב.</li>
                 </ol>
 
-                <h3>4. היקף המשרה ושעות עבודה</h3>
+                <h3>4. התמורה (שכר)</h3>
                 <ol>
-                    [cite_start]<li>העובד יעבוד בהיקף משרה של משמרות (בוקר/ערב) בהתאם לסידור עבודה שבועי[cite: 13].</li>
-                    <li>העובד מצהיר כי ידוע לו ששעות העבודה עשויות להשתנות.</li>
-                    <li>לא יבוצעו שעות נוספות אלא באישור מראש ובכתב מאת המעסיק.</li>
+                    <li>שכר שעתי בסך <strong><span class="fill-data" id="outSalary">35</span> ₪</strong> (ברוטו).</li>
+                    <li>השכר ישולם עד ה-9 לכל חודש. נסיעות והבראה ישולמו כחוק.</li>
                 </ol>
 
-                <h3>5. התמורה (שכר)</h3>
+                <h3>5. תנאים סוציאליים</h3>
                 <ol>
-                    [cite_start]<li>כשכר כולל וקובע לכל דבר ועניין, ישלם המעסיק לעובד שכר שעתי בסך <strong><span class="fill-data" id="outSalary">35</span> ₪</strong> (ברוטו)[cite: 15].</li>
-                    <li>השכר ישולם לחשבון הבנק של העובד עד ה-9 לכל חודש קלנדרי.</li>
-                    [cite_start]<li><strong>נסיעות:</strong> החברה תשתתף בהוצאות נסיעה של העובד מביתו למקום העבודה וחזרה, עד לתקרה הקבועה בצו ההרחבה[cite: 18].</li>
-                    [cite_start]<li><strong>דמי הבראה:</strong> ישולמו בהתאם לצו ההרחבה הכללי במשק לאחר השלמת שנת עבודה[cite: 18].</li>
+                    <li>העובד יהיה זכאי לביטוח פנסיוני מקיף כחוק.</li>
+                    <li>ימי חופשה ומחלה יצברו וינוצלו בהתאם לחוק.</li>
                 </ol>
 
-                <h3>6. תנאים סוציאליים וביטוח פנסיוני</h3>
+                <h3>6. סודיות וקניין רוחני</h3>
                 <ol>
-                    [cite_start]<li>העובד יהיה זכאי לביטוח פנסיוני מקיף בהתאם לצו ההרחבה לביטוח פנסיוני חובה במשק[cite: 20].</li>
-                    <li>ההפרשות יבוצעו כחוק (חלק עובד וחלק מעביד) לאחר תקופת ההמתנה הקבועה בחוק, אלא אם קיים לעובד ביטוח פנסיוני פעיל קודם.</li>
-                    [cite_start]<li><strong>חופשה ומחלה:</strong> ימי חופשה וימי מחלה יצברו וינוצלו בהתאם לחוק חופשה שנתית ולחוק דמי מחלה[cite: 19, 20].</li>
+                    <li>העובד מתחייב לשמור על סודיות מוחלטת לגבי נתוני החברה ולקוחותיה.</li>
+                    <li>חל איסור להעביר מידע למתחרים או לעשות בו שימוש אישי.</li>
                 </ol>
 
-                <h3>7. שמירת סודיות וקניין רוחני (חשוב)</h3>
+                <h3>7. סיום יחסי עבודה</h3>
                 <ol>
-                    <li>העובד מצהיר כי ידוע לו שבתוקף עבודתו הוא ייחשף למידע סודי של החברה, לרבות רשימות לקוחות, ספקים, שיטות תמחור, ונהלים עסקיים.</li>
-                    [cite_start]<li>העובד מתחייב לשמור על סודיות מוחלטת ולא לגלות, להעביר או לעשות שימוש במידע זה, הן בתקופת עבודתו והן לאחריה, ללא הגבלת זמן[cite: 24].</li>
-                    <li>כל קניין רוחני, המצאה או פיתוח שייעשה ע"י העובד במסגרת עבודתו יהיה קניינה הבלעדי של החברה.</li>
-                </ol>
-
-                <h3>8. סיום יחסי עבודה</h3>
-                <ol>
-                    [cite_start]<li>כל צד רשאי לסיים את ההסכם במתן הודעה מוקדמת בכתב לצד השני, בהתאם לחוק הודעה מוקדמת לפיטורים ולהתפטרות[cite: 26, 27].</li>
-                    [cite_start]<li>החברה רשאית לסיים את עבודת העובד <strong>לאלתר וללא הודעה מוקדמת</strong> (ובשלילת פיצויים) במקרים חמורים כגון: גניבה, מעילה באמון, אלימות, הטרדה, נזק מכוון לרכוש, או עבירה פלילית שיש עמה קלון[cite: 28, 29, 30, 31].</li>
-                </ol>
-
-                <h3>9. שונות</h3>
-                <ol>
-                    <li>הסכם זה ממצה את כל המוסכם בין הצדדים ומבטל כל הסכמה קודמת.</li>
-                    <li>כל שינוי בהסכם זה יעשה בכתב בלבד ויחתם ע"י שני הצדדים.</li>
-                    [cite_start]<li>כתובות הצדדים הן כפי שמופיעות במבוא להסכם[cite: 35].</li>
+                    <li>כל צד רשאי לסיים את ההסכם במתן הודעה מוקדמת בכתב.</li>
+                    <li>החברה רשאית לסיים את עבודת העובד <strong>לאלתר</strong> במקרים חמורים כגון גניבה או אלימות.</li>
                 </ol>
 
                 <br>
-                [cite_start]<p><strong>ולראיה באו הצדדים על החתום:</strong> [cite: 37]</p>
+                <p><strong>ולראיה באו הצדדים על החתום:</strong></p>
             </div>
         </div>
 
         <div class="card">
-            <div class="card-title">3. חתימה וצרופות (שלב חובה)</div>
+            <div class="card-title">3. חתימה וצרופות (חובה)</div>
             
             <button class="btn btn-sig" id="btnSignModal" onclick="openSigPad()">
-                <i class="fas fa-file-signature"></i> לחץ כאן לחתימה דיגיטלית
+                <i class="fas fa-file-signature"></i> לחץ כאן לחתימה
             </button>
-            <div id="sigStatus" style="text-align:center; color:green; display:none; margin-top:5px;">✓ נחתם</div>
+            
+            <div id="sigPreviewContainer" style="text-align:center; display:none; margin-top:15px; border:1px solid #eee; padding:10px;">
+                <p style="font-size:12px; margin:0;">החתימה שלך נקלטה:</p>
+                <img id="sigPreviewImg" style="max-height:80px;">
+            </div>
 
             <div style="margin-top: 20px; border-top: 1px dashed #eee; padding-top: 15px;">
                 <p style="font-size:14px; margin-bottom:10px;">חובה לצרף צילום ת.ז וספח:</p>
@@ -216,15 +192,13 @@
         </div>
 
         <button class="btn btn-save" onclick="finishProcess()">
-            <i class="fas fa-check-circle"></i> אישור וייצור קובץ PDF
+            <i class="fas fa-check-circle"></i> סיום ושמירה (PDF)
         </button>
-        <div style="text-align:center; margin-top:10px; font-size:12px; color:#555;">לאחר הלחיצה, שמור את הקובץ ושלח אותו למנהל.</div>
-
     </div>
 
     <div id="sigModal">
         <div class="modal-content">
-            <div class="modal-header">נא לחתום במרכז המסך</div>
+            <div class="modal-header">חתום בתוך המסגרת</div>
             <canvas id="sigCanvas"></canvas>
             <div class="modal-footer">
                 <button class="btn" style="background:#e74c3c; color:white; flex:1;" onclick="clearPad()">נקה</button>
@@ -244,89 +218,112 @@
             <div style="margin-top:60px; display:flex; justify-content:space-between; align-items:flex-end;">
                 <div style="text-align:center; width:45%;">
                     <img src="signther.jpg" style="width:130px; mix-blend-mode:multiply;">
-                    <div style="border-top:1px solid #000; padding-top:5px;"><strong>חתימת וחותמת החברה</strong></div>
+                    <div style="border-top:1px solid #000; padding-top:5px;"><strong>חתימת החברה</strong></div>
                 </div>
                 <div style="text-align:center; width:45%;">
                     <img id="printSigImg" style="max-height:80px;">
                     <div style="border-top:1px solid #000; padding-top:5px;"><strong>חתימת העובד</strong></div>
                 </div>
             </div>
-            <div style="position:absolute; bottom:10mm; width:100%; text-align:center; font-size:10px; color:#555;">MAD PARFUMEUR LTD | 515456093</div>
+            <div style="position:absolute; bottom:10mm; width:100%; text-align:center; font-size:10px;">MAD PARFUMEUR LTD</div>
         </div>
 
         <div class="legal-page" style="text-align:center;">
-            <h2 style="text-decoration:underline; margin-bottom:40px;">נספח: מסמכים מזהים</h2>
-            <div style="margin-bottom:30px;">
-                <p>צילום תעודת זהות:</p>
-                <img id="printImgFront" style="max-width:90%; border:1px solid #ddd;">
-            </div>
-            <div>
-                <p>צילום ספח:</p>
+            <h2 style="text-decoration:underline;">נספח: מסמכים מזהים</h2>
+            <div style="margin-top:40px;">
+                <img id="printImgFront" style="max-width:90%; border:1px solid #ddd; margin-bottom:20px;">
+                <br>
                 <img id="printImgBack" style="max-width:90%; border:1px solid #ddd;">
             </div>
         </div>
     </div>
 
     <script>
-        // --- 1. Initialization ---
+        // --- Init ---
         document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('he-IL');
 
-        // --- 2. Live Updates ---
+        // --- Live Updates ---
         function updateContract() {
             const name = document.getElementById('inpName').value || "_______";
             const id = document.getElementById('inpID').value || "_______";
             const salary = document.getElementById('inpSalary').value || "35";
-
-            // Update View
             document.getElementById('outName').innerText = name;
             document.getElementById('outID').innerText = id;
             document.getElementById('outSalary').innerText = salary;
         }
 
-        // --- 3. Signature Logic ---
+        // --- Signature ---
         const modal = document.getElementById('sigModal');
         const canvas = document.getElementById('sigCanvas');
         const ctx = canvas.getContext('2d');
         let painting = false;
         let sigData = null;
 
-        function openSigPad() {
-            modal.style.display = 'flex';
-            // Resize canvas for high DPI
+        function resizeCanvas() {
             const rect = canvas.parentElement.getBoundingClientRect();
             canvas.width = rect.width;
-            canvas.height = rect.height - 130; // Minus header/footer
+            canvas.height = rect.height - 130; 
         }
 
-        function clearPad() { ctx.clearRect(0,0,canvas.width,canvas.height); }
+        function openSigPad() {
+            modal.style.display = 'flex';
+            resizeCanvas();
+        }
+
+        function clearPad() { ctx.clearRect(0,0,canvas.width,canvas.height); sigData = null; }
         
         function savePad() {
+            if(isCanvasBlank(canvas)) {
+                alert("אנא חתום לפני האישור");
+                return;
+            }
             sigData = canvas.toDataURL();
+            
+            // Show preview on main screen
+            document.getElementById('sigPreviewImg').src = sigData;
+            document.getElementById('sigPreviewContainer').style.display = 'block';
+            
+            // Set for print
             document.getElementById('printSigImg').src = sigData;
+            
             document.getElementById('btnSigModal').classList.add('done');
             document.getElementById('btnSigModal').innerHTML = '<i class="fas fa-check"></i> החתימה נשמרה';
-            document.getElementById('sigStatus').style.display = 'block';
             modal.style.display = 'none';
         }
 
+        // Helper to check if blank
+        function isCanvasBlank(canvas) {
+            const context = canvas.getContext('2d');
+            const pixelBuffer = new Uint32Array(
+                context.getImageData(0, 0, canvas.width, canvas.height).data.buffer
+            );
+            return !pixelBuffer.some(color => color !== 0);
+        }
+
+        // Drawing Events
         function start(e) { painting = true; draw(e); }
         function end() { painting = false; ctx.beginPath(); }
         function draw(e) {
             if (!painting) return;
-            e.preventDefault();
+            e.preventDefault(); // Stop scrolling
+            
+            // Get position relative to canvas
             const rect = canvas.getBoundingClientRect();
-            const x = (e.clientX || e.touches[0].clientX) - rect.left;
-            const y = (e.clientY || e.touches[0].clientY) - rect.top;
+            const clientX = e.clientX || e.touches[0].clientX;
+            const clientY = e.clientY || e.touches[0].clientY;
+            
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
             
             ctx.lineWidth = 3; ctx.lineCap = 'round';
             ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
         }
 
-        canvas.addEventListener('mousedown', start); canvas.addEventListener('touchstart', start, {passive:false});
+        canvas.addEventListener('mousedown', start); canvas.addEventListener('touchstart', start, {passive: false});
         canvas.addEventListener('mouseup', end); canvas.addEventListener('touchend', end);
-        canvas.addEventListener('mousemove', draw); canvas.addEventListener('touchmove', draw, {passive:false});
+        canvas.addEventListener('mousemove', draw); canvas.addEventListener('touchmove', draw, {passive: false});
 
-        // --- 4. Image Handling ---
+        // --- Images ---
         let uploadedFront = false;
         function handleImg(input, type) {
             if (input.files && input.files[0]) {
@@ -335,21 +332,20 @@
                     if (type === 'front') {
                         document.getElementById('printImgFront').src = e.target.result;
                         document.getElementById('btnFront').classList.add('done');
-                        document.getElementById('btnFront').innerHTML = '📷 צורף בהצלחה';
+                        document.getElementById('btnFront').innerHTML = '📷 צורף';
                         uploadedFront = true;
                     } else {
                         document.getElementById('printImgBack').src = e.target.result;
                         document.getElementById('btnBack').classList.add('done');
-                        document.getElementById('btnBack').innerHTML = '📄 צורף בהצלחה';
+                        document.getElementById('btnBack').innerHTML = '📄 צורף';
                     }
                 };
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
-        // --- 5. Finish & Print ---
+        // --- Finish ---
         function finishProcess() {
-            // Validation
             const name = document.getElementById('inpName').value;
             const id = document.getElementById('inpID').value;
             
@@ -357,17 +353,8 @@
             if(!sigData) return alert('חובה לחתום על המסמך');
             if(!uploadedFront) return alert('חובה לצרף צילום תעודת זהות');
 
-            // Copy content to print area
             document.getElementById('printContractContent').innerHTML = document.querySelector('.contract-box').innerHTML;
-
             window.print();
-
-            setTimeout(() => {
-                const msg = `היי, הנה הסכם העבודה החתום של ${name}. (מצורף קובץ PDF)`;
-                if(confirm("האם לפתוח וואטסאפ למשלוח הקובץ למנהל?")) {
-                    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-                }
-            }, 1000);
         }
     </script>
 </body>
