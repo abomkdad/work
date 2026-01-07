@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAD Smart Contract</title>
+    <title>MAD System - Full & Compressed</title>
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
     
     <style>
         :root { 
@@ -17,16 +18,19 @@
         
         body { margin: 0; padding: 0; font-family: 'Assistant', sans-serif; background: var(--light); color: #333; }
         
-        /* --- 1. Admin Panel --- */
+        /* --- Admin Panel --- */
         #adminView { 
             max-width: 800px; margin: 20px auto; background: white; padding: 25px; 
             border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;
         }
+        .admin-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px; }
+        
         .input-row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
         .input-group { flex: 1; min-width: 200px; }
         .input-group label { display: block; margin-bottom: 5px; font-weight: bold; }
         .input-field { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
         
+        /* Contract Editor */
         .editor-container {
             border: 2px solid var(--primary); border-radius: 8px; background: #fff; margin-top: 15px;
             height: 400px; overflow-y: auto; padding: 20px; position: relative;
@@ -42,9 +46,10 @@
             margin-top: 20px; transition: 0.3s;
         }
 
-        /* --- 2. Employee Wizard --- */
+        /* --- Employee Wizard --- */
         #employeeView { display: none; height: 100vh; flex-direction: column; }
         .wizard-header { background: var(--dark); color: white; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; position: sticky; top: 0; z-index: 100; }
+        
         .step-container { flex: 1; padding: 20px; overflow-y: auto; display: none; }
         .step-container.active { display: block; animation: fadeIn 0.3s; }
         
@@ -64,19 +69,19 @@
         .btn-next { background: var(--dark); color: white; }
         .btn-prev { background: #eee; color: #333; }
 
-        /* --- 3. Signature Modal --- */
+        /* --- Signature Modal --- */
         #sigModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: none; flex-direction: column; }
         canvas { flex: 1; width: 100%; background: #fff; touch-action: none; cursor: crosshair; }
         .sig-toolbar { padding: 10px; display: flex; gap: 10px; background: #eee; }
 
-        /* --- 4. Final Preview (A4) --- */
+        /* --- Final Preview (A4) --- */
         #previewContainer { display: none; background: #555; padding: 10px; }
         .a4-page {
             background: white; width: 210mm; min-height: 297mm; margin: 0 auto; padding: 20mm;
             box-sizing: border-box; position: relative; 
         }
-        /* Important: Ensure injected content is visible */
-        #finalContractBody { display: block; width: 100%; min-height: 100px; }
+        /* Make injected content display correctly */
+        #finalContractBody { display: block; width: 100%; }
         
         @media screen and (max-width: 800px) { .a4-page { width: 100%; height: auto; padding: 15mm; } }
 
@@ -94,7 +99,7 @@
 <body>
 
     <div id="adminView">
-        <div style="text-align:center; margin-bottom:20px;">
+        <div class="admin-header">
             <img src="logo.jpg" style="max-width: 120px;">
             <h2>עורך חוזים מתקדם (למנהל)</h2>
         </div>
@@ -120,7 +125,7 @@
             </div>
         </div>
 
-        <label style="font-weight:bold; margin-top:20px; display:block;">תוכן החוזה (ניתן לערוך הכל):</label>
+        <label style="font-weight:bold; margin-top:20px; display:block;">תוכן החוזה (ערוך כאן - השינויים יישמרו):</label>
         <div class="editor-container">
             <div id="editorBody" contenteditable="true">
                 
@@ -181,7 +186,7 @@
             </div>
         </div>
         
-        <button class="btn-main" onclick="createLink()">🔗 צור קישור ושלח לעובד בוואטסאפ</button>
+        <button class="btn-main" onclick="createLink()">🔗 צור קישור (דחוס ומוכן) ושלח לעובד</button>
         <div id="linkResult" style="margin-top:15px; word-break:break-all; display:none; background:#f0f0f0; padding:15px; border-radius:5px; text-align:center;"></div>
     </div>
 
@@ -196,6 +201,7 @@
                 <div class="info-row"><span style="font-weight:bold;">תעודת זהות:</span><span id="dispID"></span></div>
                 <div class="info-row"><span style="font-weight:bold;">שכר לשעה:</span><span id="dispSalary"></span> ₪</div>
                 <div class="info-row"><span style="font-weight:bold;">משרה:</span><span id="dispScope"></span></div>
+                <div class="info-row"><span style="font-weight:bold;">תאריך:</span><span id="dispDate"></span></div>
             </div>
         </div>
 
@@ -211,11 +217,11 @@
         <div id="step3" class="step-container">
             <h2 style="text-align:center;">צילום מסמכים</h2>
             <label class="big-btn" id="btnUploadFront">
-                <i class="fas fa-id-card"></i> צילום תעודה (קדמי)
+                <i class="fas fa-id-card"></i> צלם תעודה (קדמי)
                 <input type="file" hidden accept="image/*" onchange="handleImg(this, 'imgFront', 'btnUploadFront')">
             </label>
             <label class="big-btn" id="btnUploadBack">
-                <i class="fas fa-file-alt"></i> צילום ספח
+                <i class="fas fa-file-alt"></i> צלם ספח
                 <input type="file" hidden accept="image/*" onchange="handleImg(this, 'imgBack', 'btnUploadBack')">
             </label>
         </div>
@@ -287,8 +293,10 @@
                 document.getElementById('employeeView').style.display = 'flex';
                 
                 try {
-                    // Safe decoding
-                    const json = decodeURIComponent(escape(atob(params.get('d'))));
+                    // *** CRITICAL FIX: Use LZString for decompression ***
+                    const json = LZString.decompressFromEncodedURIComponent(params.get('d'));
+                    if (!json) throw new Error("Decompression failed");
+                    
                     empData = JSON.parse(json);
                     
                     // Fill Review Step
@@ -296,6 +304,7 @@
                     document.getElementById('dispID').innerText = empData.i;
                     document.getElementById('dispSalary').innerText = empData.s;
                     document.getElementById('dispScope').innerText = empData.sc;
+                    document.getElementById('dispDate').innerText = new Date().toLocaleDateString('he-IL');
 
                     // Fill Final Contract Body (Search & Replace in the HTML content)
                     let content = empData.body;
@@ -308,46 +317,45 @@
                     document.getElementById('finalContractBody').innerHTML = content;
 
                 } catch(e) { 
-                    alert('שגיאה בטעינת הנתונים (URL Broken). נסה ליצור קישור קצר יותר.'); 
+                    alert('שגיאה בטעינת הנתונים (URL Broken). נסה ליצור קישור מחדש.'); 
+                    console.error(e);
                 }
             }
         };
 
         function createLink() {
             // Get the HTML content from the editor
-            // Minify simply by removing line breaks to save URL space
-            const contractHTML = document.getElementById('editorBody').innerHTML.replace(/(\r\n|\n|\r)/gm, "");
+            const contractHTML = document.getElementById('editorBody').innerHTML;
             
             const data = {
                 n: document.getElementById('admName').value,
                 i: document.getElementById('admID').value,
                 s: document.getElementById('admSalary').value,
                 sc: document.getElementById('admScope').value,
-                body: contractHTML
+                body: contractHTML // Send the FULL edited HTML
             };
             
             if(!data.n || !data.i) return alert('נא למלא שם ותעודת זהות');
             
-            // Encode
-            try {
-                const str = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
-                const link = window.location.href.split('?')[0] + '?d=' + str;
-                
-                const res = document.getElementById('linkResult');
-                res.style.display = 'block';
-                res.innerHTML = `<strong>העתק קישור ושלח:</strong><br><a href="${link}" style="word-break:break-all;">${link}</a>`;
-                navigator.clipboard.writeText(link);
-                alert('הקישור הועתק ללוח!');
-            } catch (err) {
-                alert('שגיאה: תוכן החוזה ארוך מדי לקישור. נסה לקצר מעט.');
-            }
+            // *** CRITICAL FIX: Use LZString for compression ***
+            const str = LZString.compressToEncodedURIComponent(JSON.stringify(data));
+            const link = window.location.href.split('?')[0] + '?d=' + str;
+            
+            const res = document.getElementById('linkResult');
+            res.style.display = 'block';
+            res.innerHTML = `<strong>העתק קישור ושלח:</strong><br><a href="${link}" style="word-break:break-all;">לחץ כאן להעתקה</a>`;
+            
+            // Clipboard copy
+            navigator.clipboard.writeText(link).then(() => {
+                alert('הקישור הועתק ללוח! עכשיו שלח אותו לעובד.');
+            });
         }
 
         // Wizard Navigation
         function nextStep() {
             if(currentStep === 2 && !sigDataUrl) return alert('חובה לחתום');
             if(currentStep === 3) {
-                if(!imgFrontUrl) return alert('חובה לצרף תעודת זהות');
+                if(!imgFrontUrl) return alert('חובה לצרף תעודה');
                 
                 document.getElementById('employeeView').style.display = 'none';
                 document.getElementById('previewContainer').style.display = 'block';
@@ -414,7 +422,7 @@
                     if(targetID==='imgBack') imgBackUrl=e.target.result;
                     document.getElementById('final'+targetID.charAt(0).toUpperCase()+targetID.slice(1)).src = e.target.result;
                     document.getElementById(btnID).classList.add('done');
-                    document.getElementById(btnID).innerHTML = '<i class="fas fa-check"></i> צורף';
+                    document.getElementById(btnID).innerHTML = '<i class="fas fa-check"></i> צורף בהצלחה';
                 }
                 reader.readAsDataURL(input.files[0]);
             }
