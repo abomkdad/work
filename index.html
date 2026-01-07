@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAD Smart Contract</title>
+    <title>MAD System - Manager Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
@@ -17,34 +17,55 @@
         
         body { margin: 0; padding: 0; font-family: 'Assistant', sans-serif; background: var(--light); color: #333; }
         
-        /* --- 1. Admin Panel --- */
+        /* --- 1. Admin Panel (Desktop/Tablet) --- */
         #adminView { 
-            max-width: 600px; margin: 20px auto; background: white; padding: 20px; 
-            border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: block;
+            max-width: 800px; margin: 20px auto; background: white; padding: 30px; 
+            border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); display: block;
         }
-        .admin-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px; }
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .input-field { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
-        .btn-main { 
-            width: 100%; padding: 15px; background: var(--primary); border: none; 
-            border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; color: black;
+        .admin-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 15px; margin-bottom: 25px; }
+        .admin-title { font-size: 24px; font-weight: bold; color: var(--dark); }
+        
+        .input-row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
+        .input-group { flex: 1; min-width: 200px; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+        .input-field { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
+        
+        /* THE EDITOR */
+        .contract-editor-label { font-weight: bold; font-size: 16px; margin-top: 20px; display: block; color: var(--dark); }
+        .contract-editor-container {
+            border: 2px solid #ccc; border-radius: 8px; background: #fff; margin-top: 10px;
+            height: 500px; overflow-y: auto; padding: 20px; position: relative;
         }
+        #editorBody {
+            outline: none; line-height: 1.6; font-size: 14px; text-align: justify;
+        }
+        #editorBody h3 { border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 20px; font-size: 16px; font-weight: bold; }
+        #editorBody ul, #editorBody ol { padding-right: 20px; }
+        #editorBody li { margin-bottom: 5px; }
+        
+        .editor-toolbar {
+            background: #eee; padding: 5px; border-bottom: 1px solid #ccc; display: flex; gap: 5px; position: sticky; top: 0;
+        }
+        .tool-btn { background: white; border: 1px solid #aaa; padding: 2px 8px; cursor: pointer; font-size: 12px; font-weight: bold; }
 
-        /* --- 2. Employee Wizard --- */
+        .btn-main { 
+            width: 100%; padding: 15px; background: var(--dark); border: none; 
+            border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; color: var(--primary);
+            margin-top: 20px; transition: 0.3s;
+        }
+        .btn-main:hover { background: #1a252f; }
+
+        /* --- 2. Employee Wizard (Mobile) --- */
         #employeeView { display: none; height: 100vh; flex-direction: column; }
         .wizard-header { background: var(--dark); color: white; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; position: sticky; top: 0; z-index: 100; }
-        
         .step-container { flex: 1; padding: 20px; overflow-y: auto; display: none; }
         .step-container.active { display: block; animation: fadeIn 0.3s; }
-
         .step-title { font-size: 22px; font-weight: bold; margin-bottom: 10px; text-align: center; }
         .step-desc { text-align: center; color: #666; margin-bottom: 30px; }
-
-        .info-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        
+        .info-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .info-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 10px 0; }
-        .info-label { font-weight: bold; color: #555; }
-
+        
         .big-btn {
             display: flex; align-items: center; justify-content: center; gap: 10px;
             width: 100%; padding: 20px; margin-bottom: 15px;
@@ -63,12 +84,15 @@
         canvas { flex: 1; width: 100%; background: #fff; touch-action: none; cursor: crosshair; }
         .sig-toolbar { padding: 10px; display: flex; gap: 10px; background: #eee; }
 
-        /* --- 4. Final Preview (Hidden A4) --- */
+        /* --- 4. Final Preview (A4) --- */
         #previewContainer { display: none; background: #555; padding: 10px; }
         .a4-page {
             background: white; width: 210mm; min-height: 297mm; margin: 0 auto; padding: 20mm;
-            box-sizing: border-box; position: relative;
+            box-sizing: border-box; position: relative; 
         }
+        /* Dynamic content injection area */
+        #finalContractText { font-size: 14px; line-height: 1.6; text-align: justify; }
+        
         @media screen and (max-width: 800px) { .a4-page { width: 100%; height: auto; padding: 15mm; } }
 
         @media print {
@@ -86,59 +110,129 @@
 
     <div id="adminView">
         <div class="admin-header">
-            <img src="logo.jpg" style="max-width: 150px;">
-            <h3>מערכת חוזים חכמה (למנהל)</h3>
+            <img src="logo.jpg" style="max-width: 120px;">
+            <div class="admin-title">מערכת חוזים חכמה (למנהל)</div>
+            <small>מלא את פרטי העובד, ערוך את החוזה במידת הצורך, ושלח קישור.</small>
         </div>
         
-        <div class="input-group">
-            <label>שם העובד</label>
-            <input type="text" id="admName" class="input-field" placeholder="לדוגמה: ישראל ישראלי">
+        <div class="input-row">
+            <div class="input-group">
+                <label>שם העובד</label>
+                <input type="text" id="admName" class="input-field" placeholder="לדוגמה: ישראל ישראלי">
+            </div>
+            <div class="input-group">
+                <label>תעודת זהות</label>
+                <input type="tel" id="admID" class="input-field" placeholder="123456789">
+            </div>
         </div>
-        <div class="input-group">
-            <label>תעודת זהות</label>
-            <input type="tel" id="admID" class="input-field" placeholder="מספר זהות">
+        <div class="input-row">
+            <div class="input-group">
+                <label>שכר לשעה (₪)</label>
+                <input type="number" id="admSalary" class="input-field" value="35">
+            </div>
+            <div class="input-group">
+                <label>היקף משרה</label>
+                <input type="text" id="admScope" class="input-field" value="משמרות / משרה חלקית">
+            </div>
         </div>
-        <div class="input-group">
-            <div style="display:flex; gap:10px;">
-                <div style="flex:1">
-                    <label>שכר לשעה</label>
-                    <input type="number" id="admSalary" class="input-field" value="35">
-                </div>
-                <div style="flex:1">
-                    <label>משרה</label>
-                    <input type="text" id="admScope" class="input-field" value="משמרות">
-                </div>
+
+        <label class="contract-editor-label">תוכן החוזה (ניתן לעריכה מלאה):</label>
+        <div class="contract-editor-container">
+            <div id="editorBody" contenteditable="true">
+                
+                <h3>1. תפקיד וסמכויות</h3>
+                <ol>
+                    <li>העובד יועסק בתפקיד <strong>מוכר / יועץ מכירות</strong> בסניפי הרשת.</li>
+                    <li>תחומי אחריות: מכירת מוצרים, ניהול קופה, סליקת אשראי, קבלת סחורה וסידור המדפים, שמירה על ניקיון וסדר בסניף.</li>
+                    <li>העובד מתחייב לבצע את תפקידו ביושר, במסירות ובנאמנות.</li>
+                </ol>
+
+                <h3>2. תקופת העסקה</h3>
+                <ol>
+                    <li>תקופת העסקתו של העובד תחל ביום החתימה על הסכם זה.</li>
+                    <li>3 החודשים הראשונים ייחשבו כתקופת ניסיון. החברה רשאית להאריך תקופה זו ב-3 חודשים נוספים.</li>
+                </ol>
+
+                <h3>3. שעות עבודה והיקף משרה</h3>
+                <ol>
+                    <li>העובד יעבוד בהיקף משרה של: <strong>{{SCOPE}}</strong>.</li>
+                    <li>שעות העבודה יקבעו בסידור עבודה שבועי ע"י המנהל.</li>
+                    <li>העובד נדרש להגיע למשמרת בזמן. שעות נוספות יבוצעו רק באישור מראש.</li>
+                </ol>
+
+                <h3>4. שכר ותנאים נלווים</h3>
+                <ol>
+                    <li>שכר העובד יעמוד על סך <strong>{{SALARY}} ₪ לשעה</strong> (ברוטו).</li>
+                    <li>השכר ישולם עד ה-9 לכל חודש.</li>
+                    <li><strong>נסיעות:</strong> החזר הוצאות נסיעה ישולם ע"פ צו ההרחבה (חופשי חודשי).</li>
+                    <li><strong>הבראה:</strong> תשולם לאחר השלמת שנת עבודה מלאה.</li>
+                </ol>
+
+                <h3>5. תנאים סוציאליים (פנסיה)</h3>
+                <ol>
+                    <li>העובד יבוטח בביטוח פנסיוני מקיף בהתאם לצו ההרחבה במשק.</li>
+                    <li>הפרשות (עובד/מעסיק/פיצויים) יבוצעו כחוק לאחר 6 חודשי עבודה (או קודם לכן אם קיים רצף ביטוחי).</li>
+                    <li>ימי חופשה ומחלה יצברו וינוצלו בהתאם לחוק.</li>
+                </ol>
+
+                <h3>6. סודיות ואי תחרות</h3>
+                <ol>
+                    <li>העובד מתחייב לשמור בסודיות מוחלטת כל מידע עסקי של החברה (לקוחות, ספקים, נהלים, מחירונים).</li>
+                    <li>חל איסור להעביר מידע למתחרים או לעשות בו שימוש אישי.</li>
+                </ol>
+
+                <h3>7. רכוש החברה</h3>
+                <ol>
+                    <li>העובד אחראי לשמור על רכוש החברה, הציוד והמלאי.</li>
+                    <li>חל איסור להוציא סחורה ללא אישור. חוסר בקופה או במלאי ייבדק.</li>
+                </ol>
+
+                <h3>8. סיום העסקה</h3>
+                <ol>
+                    <li>הודעה מוקדמת לפיטורים או התפטרות תינתן בכתב ע"פ חוק הודעה מוקדמת.</li>
+                    <li>המעסיק רשאי לסיים את העסקה לאלתר (ללא הודעה מוקדמת) במקרים חמורים כגון גניבה, אלימות או הפרת אמונים.</li>
+                </ol>
+
             </div>
         </div>
         
-        <button class="btn-main" onclick="createLink()">🔗 צור קישור ושלח לעובד</button>
-        <div id="linkResult" style="margin-top:15px; word-break:break-all; display:none; background:#f0f0f0; padding:10px; border-radius:5px;"></div>
+        <button class="btn-main" onclick="createLink()">🔗 צור קישור ושלח לעובד בוואטסאפ</button>
+        <div id="linkResult" style="margin-top:15px; word-break:break-all; display:none; background:#f0f0f0; padding:15px; border-radius:5px; text-align:center;"></div>
     </div>
 
     <div id="employeeView">
-        <div class="wizard-header">MAD PARFUMEUR - הסכם עבודה</div>
+        <div class="wizard-header">MAD PARFUMEUR - חתימה דיגיטלית</div>
 
         <div id="step1" class="step-container active">
             <div class="step-title">שלום, <span id="dispNameHeader"></span></div>
-            <div class="step-desc">אנא וודא שפרטי ההעסקה נכונים.</div>
+            <div class="step-desc">אנא וודא שפרטי ההעסקה שלך נכונים.</div>
+            
             <div class="info-card">
                 <div class="info-row"><span class="info-label">תעודת זהות:</span><span id="dispID"></span></div>
                 <div class="info-row"><span class="info-label">שכר לשעה:</span><span id="dispSalary"></span> ₪</div>
-                <div class="info-row"><span class="info-label">היקף משרה:</span><span id="dispScope"></span></div>
+                <div class="info-row"><span class="info-label">משרה:</span><span id="dispScope"></span></div>
                 <div class="info-row"><span class="info-label">תאריך:</span><span id="dispDate"></span></div>
+            </div>
+            
+            <div style="margin-top:20px; font-size:14px; color:#555;">
+                לחץ על "הבא" כדי לקרוא את החוזה ולחתום.
             </div>
         </div>
 
         <div id="step2" class="step-container">
-            <div class="step-title">חתימה דיגיטלית</div>
-            <div class="step-desc">לחץ למטה כדי לחתום על המסך המלא.</div>
-            <button class="big-btn" id="btnSignTrigger" onclick="openSigPad()"><i class="fas fa-pen-nib"></i> לחץ כאן לחתימה</button>
+            <div class="step-title">חתימה על החוזה</div>
+            <div class="step-desc">לחץ למטה כדי לפתוח את משטח החתימה.</div>
+            
+            <button class="big-btn" id="btnSignTrigger" onclick="openSigPad()">
+                <i class="fas fa-pen-nib"></i> לחץ כאן לחתימה
+            </button>
             <img id="previewSig" style="max-width:100%; display:none; margin:10px auto; border:1px solid #eee;">
         </div>
 
         <div id="step3" class="step-container">
             <div class="step-title">צילום מסמכים</div>
             <div class="step-desc">חובה לצרף צילום תעודת זהות וספח.</div>
+            
             <label class="big-btn" id="btnUploadFront">
                 <i class="fas fa-id-card"></i> צלם תעודה (קדמי)
                 <input type="file" hidden accept="image/*" onchange="handleImg(this, 'imgFront', 'btnUploadFront')">
@@ -168,7 +262,7 @@
         <div class="a4-page">
             <div style="text-align:center;">
                 <img src="logo.jpg" style="width:180px;">
-                <h2 style="text-decoration:underline;">הסכם עבודה אישי</h2>
+                <h2 style="text-decoration:underline; margin-bottom:5px;">הסכם עבודה אישי</h2>
             </div>
             
             <div style="font-size:14px; line-height:1.6; text-align:justify;">
@@ -176,19 +270,7 @@
                 <p><strong>בין: חברת מאד פרפיום בע"מ</strong> (להלן: "המעסיק") מצד אחד;<br>
                 <strong>לבין:</strong> <span id="finalName"></span> ת.ז <span id="finalID"></span> (להלן: "העובד") מצד שני.</p>
                 
-                <h4 style="border-bottom:1px solid #ccc;">1. עיקרי ההסכם</h4>
-                <ul>
-                    <li>העובד יועסק בתפקיד מוכר / יועץ מכירות.</li>
-                    <li>השכר השעתי: <strong><span id="finalSalary"></span> ₪</strong>.</li>
-                    <li>היקף המשרה: <span id="finalScope"></span>.</li>
-                </ul>
-                
-                <h4 style="border-bottom:1px solid #ccc;">2. הצהרות והתחייבויות</h4>
-                <ul>
-                    <li>העובד מצהיר על כשירותו לעבודה ומתחייב לשמור סודיות.</li>
-                    <li>תנאים סוציאליים (פנסיה, הבראה, חופשה) ישולמו כחוק.</li>
-                    <li>הודעה מוקדמת לסיום עבודה תינתן בכתב ע"פ חוק.</li>
-                </ul>
+                <div id="finalContractBody"></div>
 
                 <div style="margin-top:50px; display:flex; justify-content:space-between; align-items:flex-end;">
                     <div style="text-align:center;">
@@ -207,7 +289,8 @@
         <div class="a4-page id-page">
             <h3>נספח: מסמכים מזהים</h3>
             <div style="margin-top:20px;">
-                <img id="finalImgFront" style="max-width:90%; border:1px solid #ccc; margin-bottom:20px;"><br>
+                <img id="finalImgFront" style="max-width:90%; border:1px solid #ccc; margin-bottom:20px;">
+                <br>
                 <img id="finalImgBack" style="max-width:90%; border:1px solid #ccc;">
             </div>
         </div>
@@ -223,50 +306,69 @@
         window.onload = function() {
             const params = new URLSearchParams(window.location.search);
             if(params.has('d')) {
+                // Employee Mode
                 document.getElementById('adminView').style.display = 'none';
                 document.getElementById('employeeView').style.display = 'flex';
+                
                 try {
                     const json = decodeURIComponent(escape(atob(params.get('d'))));
                     empData = JSON.parse(json);
                     
+                    // Display Data
                     document.getElementById('dispNameHeader').innerText = empData.n.split(' ')[0];
                     document.getElementById('dispID').innerText = empData.i;
                     document.getElementById('dispSalary').innerText = empData.s;
                     document.getElementById('dispScope').innerText = empData.sc;
                     document.getElementById('dispDate').innerText = new Date().toLocaleDateString('he-IL');
 
+                    // Final PDF Data
                     document.getElementById('finalName').innerText = empData.n;
                     document.getElementById('finalID').innerText = empData.i;
-                    document.getElementById('finalSalary').innerText = empData.s;
-                    document.getElementById('finalScope').innerText = empData.sc;
                     document.getElementById('finalDate').innerText = new Date().toLocaleDateString('he-IL');
+                    
+                    // Replace Placeholders in Body
+                    let body = empData.body;
+                    body = body.replace(/{{SALARY}}/g, empData.s);
+                    body = body.replace(/{{SCOPE}}/g, empData.sc);
+                    document.getElementById('finalContractBody').innerHTML = body;
+
                 } catch(e) { alert('קישור לא תקין'); }
             }
         };
 
+        // --- Admin Logic ---
         function createLink() {
+            // Get content from editor
+            const contractHTML = document.getElementById('editorBody').innerHTML;
+            
             const data = {
                 n: document.getElementById('admName').value,
                 i: document.getElementById('admID').value,
                 s: document.getElementById('admSalary').value,
-                sc: document.getElementById('admScope').value
+                sc: document.getElementById('admScope').value,
+                body: contractHTML // Send the full edited HTML
             };
-            if(!data.n || !data.i) return alert('נא למלא את כל השדות');
+            
+            if(!data.n || !data.i) return alert('נא למלא שם ותעודת זהות');
             
             const str = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
             const link = window.location.href.split('?')[0] + '?d=' + str;
             
             const res = document.getElementById('linkResult');
             res.style.display = 'block';
-            res.innerHTML = `<strong>שלח בוואטסאפ:</strong><br><a href="${link}">${link}</a>`;
+            res.innerHTML = `<strong>העתק את הקישור ושלח לעובד:</strong><br><a href="${link}">${link}</a>`;
+            
+            // Try to copy
             navigator.clipboard.writeText(link);
-            alert('הקישור הועתק!');
+            alert('הקישור הועתק ללוח!');
         }
 
+        // --- Wizard Logic ---
         function nextStep() {
-            if(currentStep === 2 && !sigDataUrl) return alert('חובה לחתום');
+            if(currentStep === 2 && !sigDataUrl) return alert('חובה לחתום כדי להמשיך');
             if(currentStep === 3) {
-                if(!imgFrontUrl) return alert('חובה לצרף צילום תעודה');
+                if(!imgFrontUrl) return alert('חובה לצרף תעודת זהות');
+                
                 document.getElementById('employeeView').style.display = 'none';
                 document.getElementById('previewContainer').style.display = 'block';
                 setTimeout(() => window.print(), 500);
@@ -275,6 +377,7 @@
             document.getElementById('step'+currentStep).classList.remove('active');
             currentStep++;
             document.getElementById('step'+currentStep).classList.add('active');
+            
             document.getElementById('btnPrev').style.display = 'block';
             if(currentStep === 3) document.getElementById('btnNext').innerText = 'סיום ושמירה (PDF)';
         }
@@ -287,16 +390,29 @@
             document.getElementById('btnNext').innerText = 'הבא';
         }
 
-        // Signature
+        // --- Signature ---
         const sigModal = document.getElementById('sigModal');
         const canvas = document.getElementById('theCanvas');
         const ctx = canvas.getContext('2d');
         let painting = false;
 
-        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight - 100; }
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight - 100;
+        }
         function openSigPad() { sigModal.style.display = 'flex'; resizeCanvas(); }
         function clearPad() { ctx.clearRect(0,0,canvas.width,canvas.height); }
-        
+        function savePad() {
+            sigDataUrl = canvas.toDataURL();
+            document.getElementById('previewSig').src = sigDataUrl;
+            document.getElementById('previewSig').style.display = 'block';
+            document.getElementById('finalSigImage').src = sigDataUrl;
+            
+            document.getElementById('btnSignTrigger').classList.add('done');
+            document.getElementById('btnSignTrigger').innerHTML = '<i class="fas fa-check"></i> נחתם בהצלחה';
+            sigModal.style.display = 'none';
+        }
+
         function startDraw(e) { painting = true; draw(e); }
         function endDraw() { painting = false; ctx.beginPath(); }
         function draw(e) {
@@ -313,23 +429,13 @@
         canvas.addEventListener('mouseup', endDraw);
         canvas.addEventListener('mousemove', draw);
 
-        function savePad() {
-            sigDataUrl = canvas.toDataURL();
-            document.getElementById('previewSig').src = sigDataUrl;
-            document.getElementById('previewSig').style.display = 'block';
-            document.getElementById('finalSigImage').src = sigDataUrl;
-            document.getElementById('btnSignTrigger').classList.add('done');
-            document.getElementById('btnSignTrigger').innerHTML = '<i class="fas fa-check"></i> נחתם בהצלחה';
-            sigModal.style.display = 'none';
-        }
-
+        // --- Images ---
         function handleImg(input, targetID, btnID) {
             if(input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    if(targetID === 'imgFront') imgFrontUrl = e.target.result;
-                    if(targetID === 'imgBack') imgBackUrl = e.target.result;
-                    document.getElementById('final'+targetID.charAt(0).toUpperCase() + targetID.slice(1)).src = e.target.result;
+                    if(targetID==='imgFront') imgFrontUrl=e.target.result;
+                    document.getElementById('final'+targetID.charAt(0).toUpperCase()+targetID.slice(1)).src = e.target.result;
                     document.getElementById(btnID).classList.add('done');
                     document.getElementById(btnID).innerHTML = '<i class="fas fa-check"></i> צורף בהצלחה';
                 }
