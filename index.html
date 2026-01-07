@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAD System - Manager Edition</title>
+    <title>MAD System - Full Legal Contract</title>
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
@@ -17,55 +17,37 @@
         
         body { margin: 0; padding: 0; font-family: 'Assistant', sans-serif; background: var(--light); color: #333; }
         
-        /* --- 1. Admin Panel (Desktop/Tablet) --- */
+        /* --- Admin Panel --- */
         #adminView { 
-            max-width: 800px; margin: 20px auto; background: white; padding: 30px; 
-            border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); display: block;
+            max-width: 800px; margin: 20px auto; background: white; padding: 25px; 
+            border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;
         }
-        .admin-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 15px; margin-bottom: 25px; }
-        .admin-title { font-size: 24px; font-weight: bold; color: var(--dark); }
-        
         .input-row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
         .input-group { flex: 1; min-width: 200px; }
-        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; }
         .input-field { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
         
-        /* THE EDITOR */
-        .contract-editor-label { font-weight: bold; font-size: 16px; margin-top: 20px; display: block; color: var(--dark); }
-        .contract-editor-container {
-            border: 2px solid #ccc; border-radius: 8px; background: #fff; margin-top: 10px;
-            height: 500px; overflow-y: auto; padding: 20px; position: relative;
+        /* Contract Editor */
+        .editor-container {
+            border: 2px solid var(--primary); border-radius: 8px; background: #fff; margin-top: 15px;
+            height: 600px; overflow-y: auto; padding: 30px; position: relative;
         }
-        #editorBody {
-            outline: none; line-height: 1.6; font-size: 14px; text-align: justify;
-        }
-        #editorBody h3 { border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 20px; font-size: 16px; font-weight: bold; }
+        #editorBody { outline: none; line-height: 1.6; font-size: 14px; text-align: justify; }
+        #editorBody h3 { border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 25px; font-size: 16px; font-weight: bold; color: var(--dark); }
         #editorBody ul, #editorBody ol { padding-right: 20px; }
         #editorBody li { margin-bottom: 5px; }
         
-        .editor-toolbar {
-            background: #eee; padding: 5px; border-bottom: 1px solid #ccc; display: flex; gap: 5px; position: sticky; top: 0;
-        }
-        .tool-btn { background: white; border: 1px solid #aaa; padding: 2px 8px; cursor: pointer; font-size: 12px; font-weight: bold; }
-
         .btn-main { 
             width: 100%; padding: 15px; background: var(--dark); border: none; 
             border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; color: var(--primary);
             margin-top: 20px; transition: 0.3s;
         }
-        .btn-main:hover { background: #1a252f; }
 
-        /* --- 2. Employee Wizard (Mobile) --- */
+        /* --- Employee Wizard --- */
         #employeeView { display: none; height: 100vh; flex-direction: column; }
         .wizard-header { background: var(--dark); color: white; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; position: sticky; top: 0; z-index: 100; }
         .step-container { flex: 1; padding: 20px; overflow-y: auto; display: none; }
         .step-container.active { display: block; animation: fadeIn 0.3s; }
-        .step-title { font-size: 22px; font-weight: bold; margin-bottom: 10px; text-align: center; }
-        .step-desc { text-align: center; color: #666; margin-bottom: 30px; }
-        
-        .info-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .info-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 10px 0; }
-        
         .big-btn {
             display: flex; align-items: center; justify-content: center; gap: 10px;
             width: 100%; padding: 20px; margin-bottom: 15px;
@@ -73,61 +55,54 @@
             font-size: 18px; font-weight: bold; color: #555; cursor: pointer;
         }
         .big-btn.done { border-color: var(--success); color: var(--success); background: #e8f8f5; border-style: solid; }
-        
         .nav-bar { padding: 15px; background: white; border-top: 1px solid #eee; display: flex; justify-content: space-between; gap: 10px; }
         .nav-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; }
         .btn-next { background: var(--dark); color: white; }
-        .btn-prev { background: #eee; color: #333; }
-
-        /* --- 3. Signature Modal --- */
+        
+        /* --- Signature Modal --- */
         #sigModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: none; flex-direction: column; }
         canvas { flex: 1; width: 100%; background: #fff; touch-action: none; cursor: crosshair; }
         .sig-toolbar { padding: 10px; display: flex; gap: 10px; background: #eee; }
 
-        /* --- 4. Final Preview (A4) --- */
+        /* --- Final Preview (A4) --- */
         #previewContainer { display: none; background: #555; padding: 10px; }
         .a4-page {
             background: white; width: 210mm; min-height: 297mm; margin: 0 auto; padding: 20mm;
             box-sizing: border-box; position: relative; 
         }
-        /* Dynamic content injection area */
-        #finalContractText { font-size: 14px; line-height: 1.6; text-align: justify; }
-        
         @media screen and (max-width: 800px) { .a4-page { width: 100%; height: auto; padding: 15mm; } }
 
         @media print {
             #adminView, #employeeView, .nav-bar { display: none !important; }
             #previewContainer { display: block !important; background: white; padding: 0; }
             .a4-page { width: 100%; margin: 0; box-shadow: none; padding: 20mm; page-break-after: always; }
-            .id-page { page-break-before: always; text-align: center; }
             .footer { position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; border-top: 1px solid #ccc; padding-top: 10px; background: white; }
         }
-
+        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <div id="adminView">
-        <div class="admin-header">
+        <div style="text-align:center; margin-bottom:20px;">
             <img src="logo.jpg" style="max-width: 120px;">
-            <div class="admin-title">מערכת חוזים חכמה (למנהל)</div>
-            <small>מלא את פרטי העובד, ערוך את החוזה במידת הצורך, ושלח קישור.</small>
+            <h2>עורך חוזים מתקדם (למנהל)</h2>
         </div>
         
         <div class="input-row">
             <div class="input-group">
                 <label>שם העובד</label>
-                <input type="text" id="admName" class="input-field" placeholder="לדוגמה: ישראל ישראלי">
+                <input type="text" id="admName" class="input-field" placeholder="ישראל ישראלי">
             </div>
             <div class="input-group">
                 <label>תעודת זהות</label>
-                <input type="tel" id="admID" class="input-field" placeholder="123456789">
+                <input type="tel" id="admID" class="input-field" placeholder="מספר זהות">
             </div>
         </div>
         <div class="input-row">
             <div class="input-group">
-                <label>שכר לשעה (₪)</label>
+                <label>שכר לשעה</label>
                 <input type="number" id="admSalary" class="input-field" value="35">
             </div>
             <div class="input-group">
@@ -136,63 +111,64 @@
             </div>
         </div>
 
-        <label class="contract-editor-label">תוכן החוזה (ניתן לעריכה מלאה):</label>
-        <div class="contract-editor-container">
+        <label style="font-weight:bold; margin-top:20px; display:block;">תוכן החוזה (ערוך כאן את הטקסט המלא):</label>
+        <div class="editor-container">
             <div id="editorBody" contenteditable="true">
                 
+                <h2 style="text-align:center; text-decoration:underline;">הסכם עבודה אישי</h2>
+                <p style="text-align:center;">שנערך ונחתם בחדרה ביום <strong>{{DATE}}</strong></p>
+                
+                <p><strong>בין: חברת מאד פרפיום בע"מ (MAD PARFUMEUR)</strong>, ח.פ 515456093 (להלן: "<strong>המעסיק</strong>") מצד אחד;</p>
+                <p><strong>לבין: {{NAME}}</strong>, ת.ז <strong>{{ID}}</strong> (להלן: "<strong>העובד</strong>") מצד שני.</p>
+
                 <h3>1. תפקיד וסמכויות</h3>
                 <ol>
                     <li>העובד יועסק בתפקיד <strong>מוכר / יועץ מכירות</strong> בסניפי הרשת.</li>
-                    <li>תחומי אחריות: מכירת מוצרים, ניהול קופה, סליקת אשראי, קבלת סחורה וסידור המדפים, שמירה על ניקיון וסדר בסניף.</li>
-                    <li>העובד מתחייב לבצע את תפקידו ביושר, במסירות ובנאמנות.</li>
+                    <li>במסגרת תפקידו יהיה אחראי על: מכירות, ניהול קופה, סידור סחורה, ניקיון הסניף, ומתן שירות לקוחות ברמה גבוהה.</li>
+                    <li>העובד מתחייב לבצע את עבודתו במסירות, במיומנות ובנאמנות.</li>
                 </ol>
 
                 <h3>2. תקופת העסקה</h3>
                 <ol>
                     <li>תקופת העסקתו של העובד תחל ביום החתימה על הסכם זה.</li>
-                    <li>3 החודשים הראשונים ייחשבו כתקופת ניסיון. החברה רשאית להאריך תקופה זו ב-3 חודשים נוספים.</li>
+                    <li>תקופת הניסיון: 3 החודשים הראשונים ייחשבו כתקופת ניסיון. החברה רשאית להאריך תקופה זו בהתאם לשיקול דעתה.</li>
                 </ol>
 
                 <h3>3. שעות עבודה והיקף משרה</h3>
                 <ol>
                     <li>העובד יעבוד בהיקף משרה של: <strong>{{SCOPE}}</strong>.</li>
-                    <li>שעות העבודה יקבעו בסידור עבודה שבועי ע"י המנהל.</li>
-                    <li>העובד נדרש להגיע למשמרת בזמן. שעות נוספות יבוצעו רק באישור מראש.</li>
+                    <li>שעות העבודה יקבעו בסידור עבודה שבועי שיפורסם ע"י המנהל.</li>
+                    <li>העובד נדרש להגיע למשמרת בזמן.</li>
                 </ol>
 
                 <h3>4. שכר ותנאים נלווים</h3>
                 <ol>
-                    <li>שכר העובד יעמוד על סך <strong>{{SALARY}} ₪ לשעה</strong> (ברוטו).</li>
-                    <li>השכר ישולם עד ה-9 לכל חודש.</li>
-                    <li><strong>נסיעות:</strong> החזר הוצאות נסיעה ישולם ע"פ צו ההרחבה (חופשי חודשי).</li>
+                    <li>בתמורה לעבודתו, ישלם המעסיק לעובד שכר שעתי בסך: <strong>{{SALARY}} ₪ לשעה</strong> (ברוטו).</li>
+                    <li>השכר ישולם לא יאוחר מה-9 לכל חודש קלנדרי.</li>
+                    <li><strong>נסיעות:</strong> העובד זכאי להחזר הוצאות נסיעה ע"פ צו ההרחבה (חופשי חודשי).</li>
                     <li><strong>הבראה:</strong> תשולם לאחר השלמת שנת עבודה מלאה.</li>
                 </ol>
 
                 <h3>5. תנאים סוציאליים (פנסיה)</h3>
                 <ol>
-                    <li>העובד יבוטח בביטוח פנסיוני מקיף בהתאם לצו ההרחבה במשק.</li>
-                    <li>הפרשות (עובד/מעסיק/פיצויים) יבוצעו כחוק לאחר 6 חודשי עבודה (או קודם לכן אם קיים רצף ביטוחי).</li>
-                    <li>ימי חופשה ומחלה יצברו וינוצלו בהתאם לחוק.</li>
+                    <li>העובד יבוטח בביטוח פנסיוני מקיף בהתאם לצו ההרחבה לביטוח פנסיוני במשק.</li>
+                    <li>ההפרשות (תגמולים ופיצויים) יבוצעו כחוק לאחר 6 חודשי עבודה (או קודם לכן אם קיים ביטוח פנסיוני פעיל).</li>
+                    <li>ימי חופשה ומחלה יצברו וינוצלו בהתאם לחוק חופשה שנתית וחוק דמי מחלה.</li>
                 </ol>
 
-                <h3>6. סודיות ואי תחרות</h3>
+                <h3>6. שמירת סודיות ואי תחרות</h3>
                 <ol>
-                    <li>העובד מתחייב לשמור בסודיות מוחלטת כל מידע עסקי של החברה (לקוחות, ספקים, נהלים, מחירונים).</li>
-                    <li>חל איסור להעביר מידע למתחרים או לעשות בו שימוש אישי.</li>
+                    <li>העובד מתחייב לשמור בסודיות מוחלטת כל מידע עסקי, לרבות רשימות לקוחות, ספקים ומחירונים.</li>
+                    <li>חל איסור מוחלט להעביר מידע למתחרים או לעשות בו שימוש אישי.</li>
                 </ol>
 
-                <h3>7. רכוש החברה</h3>
+                <h3>7. סיום יחסי עבודה</h3>
                 <ol>
-                    <li>העובד אחראי לשמור על רכוש החברה, הציוד והמלאי.</li>
-                    <li>חל איסור להוציא סחורה ללא אישור. חוסר בקופה או במלאי ייבדק.</li>
+                    <li>כל צד רשאי לסיים את יחסי העבודה במתן הודעה מוקדמת בכתב, בהתאם לחוק.</li>
+                    <li>המעסיק רשאי לסיים את עבודת העובד <strong>לאלתר</strong> במקרים חמורים כגון גניבה, אלימות או הפרת אמונים.</li>
                 </ol>
 
-                <h3>8. סיום העסקה</h3>
-                <ol>
-                    <li>הודעה מוקדמת לפיטורים או התפטרות תינתן בכתב ע"פ חוק הודעה מוקדמת.</li>
-                    <li>המעסיק רשאי לסיים את העסקה לאלתר (ללא הודעה מוקדמת) במקרים חמורים כגון גניבה, אלימות או הפרת אמונים.</li>
-                </ol>
-
+                <p><strong>ולראיה באו הצדדים על החתום:</strong></p>
             </div>
         </div>
         
@@ -204,25 +180,18 @@
         <div class="wizard-header">MAD PARFUMEUR - חתימה דיגיטלית</div>
 
         <div id="step1" class="step-container active">
-            <div class="step-title">שלום, <span id="dispNameHeader"></span></div>
-            <div class="step-desc">אנא וודא שפרטי ההעסקה שלך נכונים.</div>
+            <h2 style="text-align:center;">שלום, <span id="dispNameHeader"></span></h2>
+            <p style="text-align:center;">אנא וודא שפרטיך נכונים לפני החתימה:</p>
             
-            <div class="info-card">
-                <div class="info-row"><span class="info-label">תעודת זהות:</span><span id="dispID"></span></div>
-                <div class="info-row"><span class="info-label">שכר לשעה:</span><span id="dispSalary"></span> ₪</div>
-                <div class="info-row"><span class="info-label">משרה:</span><span id="dispScope"></span></div>
-                <div class="info-row"><span class="info-label">תאריך:</span><span id="dispDate"></span></div>
-            </div>
-            
-            <div style="margin-top:20px; font-size:14px; color:#555;">
-                לחץ על "הבא" כדי לקרוא את החוזה ולחתום.
+            <div style="background:white; padding:15px; border-radius:10px; margin-bottom:20px;">
+                <p><strong>תעודת זהות:</strong> <span id="dispID"></span></p>
+                <p><strong>שכר לשעה:</strong> <span id="dispSalary"></span> ₪</p>
+                <p><strong>משרה:</strong> <span id="dispScope"></span></p>
             </div>
         </div>
 
         <div id="step2" class="step-container">
-            <div class="step-title">חתימה על החוזה</div>
-            <div class="step-desc">לחץ למטה כדי לפתוח את משטח החתימה.</div>
-            
+            <h2 style="text-align:center;">חתימה</h2>
             <button class="big-btn" id="btnSignTrigger" onclick="openSigPad()">
                 <i class="fas fa-pen-nib"></i> לחץ כאן לחתימה
             </button>
@@ -230,31 +199,29 @@
         </div>
 
         <div id="step3" class="step-container">
-            <div class="step-title">צילום מסמכים</div>
-            <div class="step-desc">חובה לצרף צילום תעודת זהות וספח.</div>
-            
+            <h2 style="text-align:center;">צילום מסמכים</h2>
             <label class="big-btn" id="btnUploadFront">
-                <i class="fas fa-id-card"></i> צלם תעודה (קדמי)
+                <i class="fas fa-id-card"></i> צילום תעודה (קדמי)
                 <input type="file" hidden accept="image/*" onchange="handleImg(this, 'imgFront', 'btnUploadFront')">
             </label>
             <label class="big-btn" id="btnUploadBack">
-                <i class="fas fa-file-alt"></i> צלם ספח
+                <i class="fas fa-file-alt"></i> צילום ספח
                 <input type="file" hidden accept="image/*" onchange="handleImg(this, 'imgBack', 'btnUploadBack')">
             </label>
         </div>
 
         <div class="nav-bar">
-            <button class="nav-btn btn-prev" onclick="prevStep()" id="btnPrev" style="display:none;">חזור</button>
+            <button class="nav-btn" style="background:#eee; color:#333; display:none;" id="btnPrev" onclick="prevStep()">חזור</button>
             <button class="nav-btn btn-next" onclick="nextStep()" id="btnNext">הבא</button>
         </div>
     </div>
 
     <div id="sigModal">
-        <div style="padding:15px; background:#f8f9fa; border-bottom:1px solid #ddd; text-align:center; font-weight:bold;">חתום בתוך המסגרת הלבנה</div>
+        <div style="background:#f0f0f0; padding:10px; text-align:center; font-weight:bold;">חתום כאן</div>
         <canvas id="theCanvas"></canvas>
         <div class="sig-toolbar">
-            <button class="nav-btn btn-prev" onclick="clearPad()">נקה</button>
-            <button class="nav-btn btn-next" style="background:var(--success);" onclick="savePad()">אישור חתימה</button>
+            <button class="nav-btn" style="background:#e74c3c; color:white;" onclick="clearPad()">נקה</button>
+            <button class="nav-btn" style="background:var(--success); color:white;" onclick="savePad()">אישור</button>
         </div>
     </div>
 
@@ -262,35 +229,27 @@
         <div class="a4-page">
             <div style="text-align:center;">
                 <img src="logo.jpg" style="width:180px;">
-                <h2 style="text-decoration:underline; margin-bottom:5px;">הסכם עבודה אישי</h2>
             </div>
             
-            <div style="font-size:14px; line-height:1.6; text-align:justify;">
-                <p><strong>שנערך ונחתם ביום:</strong> <span id="finalDate"></span></p>
-                <p><strong>בין: חברת מאד פרפיום בע"מ</strong> (להלן: "המעסיק") מצד אחד;<br>
-                <strong>לבין:</strong> <span id="finalName"></span> ת.ז <span id="finalID"></span> (להלן: "העובד") מצד שני.</p>
-                
-                <div id="finalContractBody"></div>
+            <div id="finalContractBody"></div>
 
-                <div style="margin-top:50px; display:flex; justify-content:space-between; align-items:flex-end;">
-                    <div style="text-align:center;">
-                        <img src="signther.jpg" style="width:100px; mix-blend-mode:multiply;"><br>
-                        <strong>המעסיק</strong>
-                    </div>
-                    <div style="text-align:center;">
-                        <img id="finalSigImage" style="max-height:80px;"><br>
-                        <strong>חתימת העובד</strong>
-                    </div>
+            <div style="margin-top:50px; display:flex; justify-content:space-between; align-items:flex-end;">
+                <div style="text-align:center;">
+                    <img src="signther.jpg" style="width:100px; mix-blend-mode:multiply;"><br>
+                    <strong>המעסיק</strong>
+                </div>
+                <div style="text-align:center;">
+                    <img id="finalSigImage" style="max-height:80px;"><br>
+                    <strong>חתימת העובד</strong>
                 </div>
             </div>
             <div class="footer">MAD PARFUMEUR LTD | 515456093</div>
         </div>
 
         <div class="a4-page id-page">
-            <h3>נספח: מסמכים מזהים</h3>
-            <div style="margin-top:20px;">
-                <img id="finalImgFront" style="max-width:90%; border:1px solid #ccc; margin-bottom:20px;">
-                <br>
+            <h3 style="text-align:center; text-decoration:underline;">נספח: מסמכים מזהים</h3>
+            <div style="text-align:center; margin-top:20px;">
+                <img id="finalImgFront" style="max-width:90%; border:1px solid #ccc; margin-bottom:20px;"><br>
                 <img id="finalImgBack" style="max-width:90%; border:1px solid #ccc;">
             </div>
         </div>
@@ -305,6 +264,10 @@
 
         window.onload = function() {
             const params = new URLSearchParams(window.location.search);
+            
+            // Set Date in Admin View
+            document.getElementById('editorBody').innerHTML = document.getElementById('editorBody').innerHTML.replace('{{DATE}}', new Date().toLocaleDateString('he-IL'));
+
             if(params.has('d')) {
                 // Employee Mode
                 document.getElementById('adminView').style.display = 'none';
@@ -314,31 +277,27 @@
                     const json = decodeURIComponent(escape(atob(params.get('d'))));
                     empData = JSON.parse(json);
                     
-                    // Display Data
+                    // Fill Review Step
                     document.getElementById('dispNameHeader').innerText = empData.n.split(' ')[0];
                     document.getElementById('dispID').innerText = empData.i;
                     document.getElementById('dispSalary').innerText = empData.s;
                     document.getElementById('dispScope').innerText = empData.sc;
-                    document.getElementById('dispDate').innerText = new Date().toLocaleDateString('he-IL');
 
-                    // Final PDF Data
-                    document.getElementById('finalName').innerText = empData.n;
-                    document.getElementById('finalID').innerText = empData.i;
-                    document.getElementById('finalDate').innerText = new Date().toLocaleDateString('he-IL');
+                    // Fill Final Contract Body (Search & Replace in the HTML content)
+                    let content = empData.body;
+                    content = content.replace(/{{NAME}}/g, empData.n)
+                                     .replace(/{{ID}}/g, empData.i)
+                                     .replace(/{{SALARY}}/g, empData.s)
+                                     .replace(/{{SCOPE}}/g, empData.sc);
                     
-                    // Replace Placeholders in Body
-                    let body = empData.body;
-                    body = body.replace(/{{SALARY}}/g, empData.s);
-                    body = body.replace(/{{SCOPE}}/g, empData.sc);
-                    document.getElementById('finalContractBody').innerHTML = body;
+                    document.getElementById('finalContractBody').innerHTML = content;
 
                 } catch(e) { alert('קישור לא תקין'); }
             }
         };
 
-        // --- Admin Logic ---
         function createLink() {
-            // Get content from editor
+            // Get the HTML content from the editor
             const contractHTML = document.getElementById('editorBody').innerHTML;
             
             const data = {
@@ -346,29 +305,27 @@
                 i: document.getElementById('admID').value,
                 s: document.getElementById('admSalary').value,
                 sc: document.getElementById('admScope').value,
-                body: contractHTML // Send the full edited HTML
+                body: contractHTML // We send the FULL EDITED HTML
             };
             
             if(!data.n || !data.i) return alert('נא למלא שם ותעודת זהות');
             
+            // Encode
             const str = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
             const link = window.location.href.split('?')[0] + '?d=' + str;
             
             const res = document.getElementById('linkResult');
             res.style.display = 'block';
-            res.innerHTML = `<strong>העתק את הקישור ושלח לעובד:</strong><br><a href="${link}">${link}</a>`;
-            
-            // Try to copy
+            res.innerHTML = `<strong>העתק קישור ושלח:</strong><br><a href="${link}">${link}</a>`;
             navigator.clipboard.writeText(link);
-            alert('הקישור הועתק ללוח!');
+            alert('הקישור הועתק!');
         }
 
-        // --- Wizard Logic ---
+        // Wizard Navigation
         function nextStep() {
-            if(currentStep === 2 && !sigDataUrl) return alert('חובה לחתום כדי להמשיך');
+            if(currentStep === 2 && !sigDataUrl) return alert('חובה לחתום');
             if(currentStep === 3) {
-                if(!imgFrontUrl) return alert('חובה לצרף תעודת זהות');
-                
+                if(!imgFrontUrl) return alert('חובה לצרף תעודה');
                 document.getElementById('employeeView').style.display = 'none';
                 document.getElementById('previewContainer').style.display = 'block';
                 setTimeout(() => window.print(), 500);
@@ -377,7 +334,6 @@
             document.getElementById('step'+currentStep).classList.remove('active');
             currentStep++;
             document.getElementById('step'+currentStep).classList.add('active');
-            
             document.getElementById('btnPrev').style.display = 'block';
             if(currentStep === 3) document.getElementById('btnNext').innerText = 'סיום ושמירה (PDF)';
         }
@@ -390,29 +346,16 @@
             document.getElementById('btnNext').innerText = 'הבא';
         }
 
-        // --- Signature ---
+        // Signature Pad
         const sigModal = document.getElementById('sigModal');
         const canvas = document.getElementById('theCanvas');
         const ctx = canvas.getContext('2d');
         let painting = false;
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight - 100;
-        }
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight - 100; }
         function openSigPad() { sigModal.style.display = 'flex'; resizeCanvas(); }
         function clearPad() { ctx.clearRect(0,0,canvas.width,canvas.height); }
-        function savePad() {
-            sigDataUrl = canvas.toDataURL();
-            document.getElementById('previewSig').src = sigDataUrl;
-            document.getElementById('previewSig').style.display = 'block';
-            document.getElementById('finalSigImage').src = sigDataUrl;
-            
-            document.getElementById('btnSignTrigger').classList.add('done');
-            document.getElementById('btnSignTrigger').innerHTML = '<i class="fas fa-check"></i> נחתם בהצלחה';
-            sigModal.style.display = 'none';
-        }
-
+        
         function startDraw(e) { painting = true; draw(e); }
         function endDraw() { painting = false; ctx.beginPath(); }
         function draw(e) {
@@ -429,15 +372,25 @@
         canvas.addEventListener('mouseup', endDraw);
         canvas.addEventListener('mousemove', draw);
 
-        // --- Images ---
+        function savePad() {
+            sigDataUrl = canvas.toDataURL();
+            document.getElementById('previewSig').src = sigDataUrl;
+            document.getElementById('previewSig').style.display = 'block';
+            document.getElementById('finalSigImage').src = sigDataUrl;
+            document.getElementById('btnSignTrigger').classList.add('done');
+            document.getElementById('btnSignTrigger').innerHTML = '<i class="fas fa-check"></i> נחתם';
+            sigModal.style.display = 'none';
+        }
+
         function handleImg(input, targetID, btnID) {
             if(input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     if(targetID==='imgFront') imgFrontUrl=e.target.result;
+                    if(targetID==='imgBack') imgBackUrl=e.target.result;
                     document.getElementById('final'+targetID.charAt(0).toUpperCase()+targetID.slice(1)).src = e.target.result;
                     document.getElementById(btnID).classList.add('done');
-                    document.getElementById(btnID).innerHTML = '<i class="fas fa-check"></i> צורף בהצלחה';
+                    document.getElementById(btnID).innerHTML = '<i class="fas fa-check"></i> צורף';
                 }
                 reader.readAsDataURL(input.files[0]);
             }
