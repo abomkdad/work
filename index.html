@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAD Corporate Contract - Full Version</title>
+    <title>MAD Corporate Contract</title>
     <link href="https://fonts.googleapis.com/css2?family=David+Libre:wght@400;500;700&family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
@@ -43,12 +43,13 @@
             font-family: 'David Libre', serif; font-size: 15px; line-height: 1.8; text-align: justify; color: #222;
             border-radius: 4px;
         }
-        .contract-box h2 { text-align: center; margin: 0 0 10px 0; font-size: 22px; text-decoration: underline; text-underline-offset: 5px; }
-        .contract-box h3 { font-size: 16px; font-weight: bold; margin-top: 25px; margin-bottom: 10px; text-decoration: underline; }
-        .contract-box p { margin: 5px 0; }
-        .contract-box ul, .contract-box ol { padding-right: 25px; margin: 0; }
-        .contract-box li { margin-bottom: 5px; }
-        .fill-data { font-weight: 700; border-bottom: 1px dotted #000; padding: 0 5px; }
+        .contract-box h1 { text-align: center; margin: 0 0 20px 0; font-size: 24px; text-decoration: underline; text-underline-offset: 5px; }
+        .contract-box h2 { font-size: 16px; font-weight: bold; margin-top: 25px; margin-bottom: 10px; text-decoration: underline; }
+        .contract-box p { margin: 10px 0; }
+        .contract-box ol { padding-right: 25px; margin: 0; }
+        .contract-box li { margin-bottom: 10px; }
+        
+        .fill-data { font-weight: 700; border-bottom: 1px dotted #000; padding: 0 5px; min-width: 50px; display: inline-block; text-align: center; }
 
         /* Buttons */
         .btn { width: 100%; padding: 16px; border: none; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -93,10 +94,9 @@
             .legal-page { margin: 0; box-shadow: none; page-break-after: always; width: 100%; height: 100%; padding: 20mm; }
             .btn, .no-print { display: none !important; }
             
-            /* Print Formatting */
             p, li { text-align: justify; line-height: 1.5; font-size: 12pt; }
-            h2 { font-size: 18pt; margin-bottom: 15px; }
-            h3 { font-size: 14pt; margin-top: 15px; margin-bottom: 5px; }
+            h1 { font-size: 24pt; margin-bottom: 20px; text-align: center; text-decoration: underline; }
+            h2 { font-size: 14pt; margin-top: 15px; margin-bottom: 5px; font-weight: bold; text-decoration: underline; }
         }
     </style>
 </head>
@@ -128,7 +128,7 @@
             </div>
         </div>
 
-        <!-- 2. Contract Preview (LONG VERSION) -->
+        <!-- 2. Contract Preview (PROFESSIONAL VERSION) -->
         <div class="card">
             <div class="card-title"><i class="fas fa-file-contract"></i> 2. הסכם העסקה (עיין בחוזה המלא)</div>
             
@@ -137,90 +137,102 @@
             </button>
 
             <div class="contract-box" id="contractContent" contenteditable="false">
-                <div class="contract-header-text">
-                    <h2>הסכם עבודה אישי ומיוחד</h2>
-                    <p>נערך ונחתם ביום: <strong><span id="dateDisplay"></span></strong></p>
-                </div>
+                <h1>הסכם עבודה</h1>
                 
-                <p><strong>בין: חברת מאד פרפיום בע"מ (ח.פ 515456093)</strong><br>
+                <p>נערך ונחתם ביום <strong><span id="dateDisplay"></span></strong></p>
+                
+                <p><strong>בין: MAD PERFUME, ח.פ./ע.מ 515456093</strong><br>
                 (להלן: "<strong>המעסיק</strong>") <u>מצד אחד</u>;</p>
                 
-                <p><strong>לבין: <span class="fill-data" id="outName">_______</span></strong>, ת.ז <strong><span class="fill-data" id="outID">_______</span></strong><br>
+                <p><strong>לבין: מר/גב' <span class="fill-data" id="outName">_______</span></strong>, ת.ז. <strong><span class="fill-data" id="outID">_______</span></strong><br>
                 (להלן: "<strong>העובד</strong>") <u>מצד שני</u>.</p>
 
-                <p><strong>הואיל</strong> והמעסיק מעוניין להעסיק את העובד;<br>
-                <strong>והואיל</strong> והעובד מעוניין לעבוד אצל המעסיק בתפקיד ובמשרה כמפורט להלן;<br>
-                <strong>לפיכך הוסכם, הוצהר והותנה בין הצדדים כדלקמן:</strong></p>
+                <h2>1. הצהרות יסוד</h2>
+                <ol>
+                    <li>העובד מצהיר כי קרא הסכם זה בעיון, הבין את תוכנו והשלכותיו המשפטיות, וכי הוא חותם עליו מרצונו החופשי וללא כל כפייה או הטעיה.</li>
+                    <li>העובד מצהיר כי לא הובטח לו כל תנאי, זכות או הטבה מעבר לאמור בהסכם זה.</li>
+                    <li>הסכם זה מהווה את מלוא ההסכמות בין הצדדים ומחליף כל מצג או הסכמה קודמים.</li>
+                </ol>
 
-                <div class="contract-section">
-                    <h3>1. תפקיד העובד</h3>
-                    <ul>
-                        <li>העובד יועסק בתפקיד <strong>מוכר / יועץ מכירות / מנהל משמרת</strong> בסניפי הרשת.</li>
-                        <li>במסגרת תפקידו יהיה אחראי על: מכירת מוצרים, ניהול קופה, סידור סחורה, ניקיון הסניף, ומתן שירות לקוחות.</li>
-                        <li>העובד מתחייב לבצע את תפקידו במיומנות, במסירות ובנאמנות.</li>
-                    </ul>
-                </div>
+                <h2>2. תפקיד וסמכויות</h2>
+                <ol>
+                    <li>העובד יועסק בתפקיד <strong>מוכר/ת</strong>, או בכל תפקיד אחר שייקבע על ידי המעסיק לפי שיקול דעתו הבלעדי.</li>
+                    <li>העובד כפוף להנהלת המעסיק ויפעל בהתאם להוראות, נהלים ומדיניות החברה.</li>
+                    <li>המעסיק רשאי לשנות את התפקיד, מקום העבודה, שעות העבודה והיקף המשרה בהתאם לצרכי העסק ובכפוף לדין.</li>
+                </ol>
 
-                <div class="contract-section">
-                    <h3>2. תקופת ההסכם</h3>
-                    <ul>
-                        <li>תקופת העסקתו של העובד היא לתקופה בלתי קצובה החל ממועד החתימה.</li>
-                        <li><strong>תקופת ניסיון:</strong> 6 החודשים הראשונים לעבודתו ייחשבו כתקופת ניסיון.</li>
-                    </ul>
-                </div>
+                <h2>3. תקופת ההעסקה</h2>
+                <ol>
+                    <li>תחילת ההעסקה ביום <strong><span id="startDateDisplay"></span></strong>.</li>
+                    <li>ההעסקה הינה לתקופה בלתי קצובה ואינה מקנה קביעות או זכות להמשך העסקה.</li>
+                </ol>
 
-                <div class="contract-section">
-                    <h3>3. היקף המשרה ושעות עבודה</h3>
-                    <ul>
-                        <li>העובד יעבוד בהיקף משרה של משמרות בהתאם לסידור עבודה שבועי.</li>
-                        <li>לא יבוצעו שעות נוספות אלא באישור מראש ובכתב מאת המעסיק.</li>
-                    </ul>
-                </div>
+                <h2>4. היקף משרה ושעות עבודה</h2>
+                <ol>
+                    <li>היקף המשרה: מלאה / חלקית / משמרות, לפי קביעת המעסיק.</li>
+                    <li>שעות וימי העבודה ייקבעו על ידי המעסיק וניתנים לשינוי.</li>
+                    <li>העובד מתחייב לדווח דיווח אמת על שעות עבודתו; דיווח כוזב יהווה הפרת משמעת חמורה.</li>
+                </ol>
 
-                <div class="contract-section">
-                    <h3>4. התמורה (שכר)</h3>
-                    <ul>
-                        <li>שכר שעתי בסך <strong><span class="fill-data" id="outSalary">35</span> ₪</strong> (ברוטו).</li>
-                        <li>השכר ישולם עד ה-9 לכל חודש קלנדרי בגין החודש החולף.</li>
-                        <li><strong>נסיעות:</strong> החברה תשתתף בהוצאות נסיעה עד לתקרה הקבועה בצו ההרחבה.</li>
-                        <li><strong>דמי הבראה:</strong> ישולמו בהתאם לחוק לאחר השלמת שנת עבודה מלאה.</li>
-                    </ul>
-                </div>
+                <h2>5. שכר ותשלומים</h2>
+                <ol>
+                    <li>שכר העובד יעמוד על סך <strong><span class="fill-data" id="outSalary">35</span> ₪</strong> ברוטו לשעה.</li>
+                    <li>השכר כולל נסיעות ודמי הבראה, אלא אם נקבע אחרת בכתב.</li>
+                    <li>זכויות סוציאליות, חופשה, מחלה, חגים ופנסיה ישולמו בהתאם לדין בלבד.</li>
+                    <li>לא ישולמו בונוסים, עמלות או הטבות נוספות אלא באישור מראש ובכתב מהמעסיק.</li>
+                </ol>
 
-                <div class="contract-section">
-                    <h3>5. תנאים סוציאליים</h3>
-                    <ul>
-                        <li>העובד יהיה זכאי לביטוח פנסיוני מקיף (תגמולים ופיצויים) בהתאם לצו ההרחבה במשק.</li>
-                        <li>ימי חופשה וימי מחלה יצברו וינוצלו בהתאם לחוק.</li>
-                    </ul>
-                </div>
+                <h2>6. חובת נאמנות ואמון</h2>
+                <ol>
+                    <li>העובד מתחייב לנאמנות מלאה, יושר ותום לב כלפי המעסיק.</li>
+                    <li>נאסר על העובד לפגוע במוניטין המעסיק, לפעול בניגוד לאינטרס העסקי שלו או ליצור קשר עם לקוחות לצרכים פרטיים.</li>
+                </ol>
 
-                <div class="contract-section">
-                    <h3>6. סודיות וקניין רוחני</h3>
-                    <ul>
-                        <li>העובד מתחייב לשמור על סודיות מוחלטת לגבי נתוני החברה, לקוחותיה, ספקיה ושיטות עבודתה.</li>
-                        <li>חל איסור להעביר מידע למתחרים או לעשות בו שימוש אישי, הן בתקופת העבודה והן לאחריה.</li>
-                    </ul>
-                </div>
+                <h2>7. סודיות מוחלטת</h2>
+                <ol>
+                    <li>העובד מתחייב לשמור בסוד מוחלט כל מידע עסקי, מסחרי, שיווקי, כספי או אחר של המעסיק.</li>
+                    <li>חובת הסודיות תחול במהלך ההעסקה ולאחר סיומה, ללא הגבלת זמן.</li>
+                    <li>הפרת סודיות תיחשב כהפרה יסודית ותגרור אחריות אישית מלאה.</li>
+                </ol>
 
-                <div class="contract-section">
-                    <h3>7. סיום יחסי עבודה</h3>
-                    <ul>
-                        <li>כל צד רשאי לסיים את ההסכם במתן הודעה מוקדמת בכתב כחוק.</li>
-                        <li>החברה רשאית לסיים את עבודת העובד <strong>לאלתר</strong> במקרים חמורים כגון גניבה, אלימות או הפרת אמונים.</li>
-                    </ul>
-                </div>
+                <h2>8. אי-תחרות ואי-שידול</h2>
+                <ol>
+                    <li>העובד מתחייב כי במשך 12 חודשים מתום ההעסקה לא יעסוק, במישרין או בעקיפין, בעסק מתחרה בתחום פעילות המעסיק, בכפוף לדין.</li>
+                    <li>נאסר על העובד לשדל לקוחות, ספקים או עובדים של המעסיק.</li>
+                    <li>הפרת סעיף זה תחייב את העובד בפיצוי מוסכם, מבלי לגרוע מזכויות נוספות של המעסיק.</li>
+                </ol>
 
-                <div class="contract-section">
-                    <h3>8. שונות</h3>
-                    <ul>
-                        <li>הסכם זה ממצה את כל המוסכם בין הצדדים.</li>
-                        <li>כל שינוי בהסכם זה יעשה בכתב בלבד.</li>
-                    </ul>
-                </div>
+                <h2>9. אחריות לנזקים וקיזוז</h2>
+                <ol>
+                    <li>העובד יישא באחריות מלאה לכל נזק שנגרם למעסיק עקב רשלנות, זדון או הפרת נהלים.</li>
+                    <li>המעסיק רשאי לקזז סכומים בהתאם לדין.</li>
+                </ol>
+
+                <h2>10. סיום העסקה</h2>
+                <ol>
+                    <li>כל צד רשאי לסיים את ההעסקה בהודעה מוקדמת על פי חוק.</li>
+                    <li>המעסיק רשאי לסיים את ההעסקה לאלתר וללא הודעה מוקדמת במקרה של גניבה, מרמה, הפרת אמון, עבירה פלילית, הפרת סודיות או הפרת משמעת חמורה.</li>
+                    <li>סיום ההעסקה לא יפגע בזכויות המעסיק לפי הסכם זה או לפי דין.</li>
+                </ol>
+
+                <h2>11. קניין רוחני</h2>
+                <p>כל רעיון, פיתוח, תוכן, שיטה או מידע שנוצרו במהלך העבודה הינם קניינו הבלעדי של המעסיק.</p>
+
+                <h2>12. דין וסמכות שיפוט</h2>
+                <ol>
+                    <li>על הסכם זה יחול דין מדינת ישראל בלבד.</li>
+                    <li>סמכות השיפוט הבלעדית נתונה לבית הדין האזורי לעבודה.</li>
+                </ol>
+
+                <h2>13. שונות</h2>
+                <ol>
+                    <li>ויתור חד-פעמי לא יהווה ויתור קבוע.</li>
+                    <li>שינוי להסכם ייעשה בכתב בלבד.</li>
+                    <li>אם סעיף מההסכם יימצא בטל, יתר הסעיפים יישארו בתוקף.</li>
+                </ol>
 
                 <br>
-                <p style="text-align: center;"><strong>ולראיה באו הצדדים על החתום:</strong></p>
+                <p style="text-align: center; margin-top: 30px;"><strong>ולראיה באו הצדדים על החתום:</strong></p>
             </div>
         </div>
 
@@ -270,7 +282,6 @@
             </div>
             <div class="modal-footer">
                 <button class="btn" style="background:#e74c3c; color:white; flex:1;" onclick="clearPad()">נקה</button>
-                <!-- Added ontouchstart for better mobile response -->
                 <button class="btn" style="background:var(--green); color:white; flex:1;" onclick="savePad()" ontouchstart="savePad()">אישור</button>
             </div>
         </div>
@@ -285,12 +296,12 @@
             </div>
             
             <!-- This will get the full long contract -->
-            <div id="printContractContent" style="margin-top:20px; font-size:14px; line-height:1.6; text-align:justify;"></div>
+            <div id="printContractContent" style="margin-top:20px;"></div>
 
             <div style="margin-top:80px; display:flex; justify-content:space-between; align-items:flex-end;">
                 <div style="text-align:center; width:45%;">
                     <img src="signther.jpg" style="width:140px; mix-blend-mode:multiply; margin-bottom:-10px;">
-                    <div style="border-top:1px solid #000; padding-top:5px; font-size:14px;"><strong>חתימת החברה</strong></div>
+                    <div style="border-top:1px solid #000; padding-top:5px; font-size:14px;"><strong>חתימת המעסיק</strong></div>
                 </div>
                 <div style="text-align:center; width:45%;">
                     <img id="printSigImg" style="max-height:90px; margin-bottom:5px;">
@@ -327,7 +338,9 @@
 
     <script>
         // --- 1. Init ---
-        document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('he-IL');
+        const todayStr = new Date().toLocaleDateString('he-IL');
+        document.getElementById('dateDisplay').innerText = todayStr;
+        document.getElementById('startDateDisplay').innerText = todayStr;
 
         function updateContract() {
             document.getElementById('outName').innerText = document.getElementById('inpName').value || "_______";
