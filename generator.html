@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAD PARFUMEUR | Enterprise Admin System</title>
+    <title>MAD PARFUMEUR | Professional System v2.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --royal-black: #0a0a0a;
             --deep-gold: #b38b2d;
-            --soft-gold: #d4af37;
             --bg-canvas: #1e1e1e;
         }
 
@@ -26,7 +25,6 @@
         .toolbar button, .toolbar select {
             background: #222; color: #fff; border: 1px solid var(--deep-gold);
             padding: 8px 15px; cursor: pointer; border-radius: 4px; font-weight: bold;
-            transition: 0.3s;
         }
         .toolbar button:hover { background: var(--deep-gold); color: black; }
         .btn-print { background: var(--deep-gold) !important; color: black !important; }
@@ -40,23 +38,23 @@
         }
 
         /* --- Graphic Frames --- */
-        .top-frame { height: 160px; background: var(--royal-black); clip-path: polygon(0 0, 100% 0, 100% 60%, 0% 100%); position: relative; }
+        .top-frame { height: 160px; background: var(--royal-black); clip-path: polygon(0 0, 100% 0, 100% 60%, 0% 100%); position: relative; z-index: 5; }
         .top-frame::after { content: ""; position: absolute; bottom: 0; right: 0; width: 100%; height: 12px; background: var(--deep-gold); transform: translateY(5px) rotate(-2deg); }
         
-        .bottom-frame { height: 100px; background: var(--royal-black); clip-path: polygon(0 40%, 100% 0, 100% 100%, 0% 100%); margin-top: auto; position: relative; }
+        .bottom-frame { height: 100px; background: var(--royal-black); clip-path: polygon(0 40%, 100% 0, 100% 100%, 0% 100%); margin-top: auto; position: relative; z-index: 5; }
         .bottom-frame::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 8px; background: var(--deep-gold); transform: translateY(-4px) rotate(1deg); }
 
         /* --- Moveable Elements --- */
         .movable { position: absolute; cursor: move; z-index: 100; border: 1px dashed transparent; }
         .movable:hover { border: 1px dashed var(--deep-gold); }
         .movable img { width: 100%; height: auto; display: block; pointer-events: none; }
-        .resizer { width: 12px; height: 12px; background: var(--deep-gold); position: absolute; right: -5px; bottom: -5px; cursor: nwse-resize; border-radius: 50%; display: none; }
+        .resizer { width: 14px; height: 14px; background: var(--deep-gold); position: absolute; right: -7px; bottom: -7px; cursor: nwse-resize; border-radius: 50%; display: none; }
         .movable:hover .resizer { display: block; }
         .locked { border: none !important; cursor: default !important; }
         .locked .resizer { display: none !important; }
 
         /* --- Content Areas --- */
-        .main-content { padding: 40px 60px; flex-grow: 1; outline: none; font-family: 'Amiri', serif; font-size: 13pt; line-height: 1.6; }
+        .main-content { padding: 40px 60px; flex-grow: 1; outline: none; font-family: 'Amiri', serif; font-size: 13pt; line-height: 1.6; z-index: 10; position: relative; }
         .doc-title { text-align: center; font-size: 28pt; font-weight: bold; color: var(--royal-black); margin-bottom: 20px; text-decoration: underline; }
 
         /* --- Table Styling --- */
@@ -67,9 +65,12 @@
 
         /* --- Print Mode --- */
         @media print {
-            body { background: white; } .toolbar, .add-row-btn { display: none !important; }
-            .page-container { padding: 0; } .paper { box-shadow: none; width: 100%; margin: 0; }
-            .movable { border: none !important; } .resizer { display: none !important; }
+            body { background: white; } 
+            .toolbar, .add-row-btn { display: none !important; }
+            .page-container { padding: 0; } 
+            .paper { box-shadow: none; width: 100%; margin: 0; }
+            .movable { border: none !important; }
+            .top-frame, .bottom-frame { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         }
     </style>
 </head>
@@ -84,7 +85,7 @@
     </select>
     
     <button onclick="toggleDir()">🔄 تحويل (AR/HE)</button>
-    <button onclick="insertDate()">📅 إدراج التاريخ</button>
+    <button onclick="insertDate()">📅 التاريخ</button>
     <button onclick="toggleLock()" id="lockBtn">🔓 العناصر متحركة</button>
     <button onclick="document.execCommand('bold')">B</button>
     <button class="btn-print" onclick="window.print()">🖨️ تصدير PDF</button>
@@ -116,30 +117,34 @@
     let isLocked = false;
     const editor = document.getElementById('editorArea');
 
-    // --- الحفظ التلقائي ---
-    function saveAll() {
-        localStorage.setItem('mad_content', editor.innerHTML);
-        localStorage.setItem('logo_pos', JSON.stringify({
-            top: logoContainer.style.top,
-            left: logoContainer.style.left,
-            width: logoContainer.style.width
-        }));
+    // --- نظام الحفظ المطور ---
+    function saveState() {
+        const state = {
+            html: editor.innerHTML,
+            logo: { t: logoContainer.style.top, l: logoContainer.style.left, w: logoContainer.style.width },
+            sign: { b: signContainer.style.bottom, l: signContainer.style.left, w: signContainer.style.width },
+            dir: paper.dir
+        };
+        localStorage.setItem('mad_v2_state', JSON.stringify(state));
     }
 
-    function loadSaved() {
-        const savedText = localStorage.getItem('mad_content');
-        if (savedText) editor.innerHTML = savedText;
-        else loadTemplate();
-
-        const logoPos = JSON.parse(localStorage.getItem('logo_pos'));
-        if (logoPos) {
-            logoContainer.style.top = logoPos.top;
-            logoContainer.style.left = logoPos.left;
-            logoContainer.style.width = logoPos.width;
+    function loadState() {
+        const saved = JSON.parse(localStorage.getItem('mad_v2_state'));
+        if (saved) {
+            editor.innerHTML = saved.html;
+            logoContainer.style.top = saved.logo.t;
+            logoContainer.style.left = saved.logo.l;
+            logoContainer.style.width = saved.logo.w;
+            signContainer.style.bottom = saved.sign.b;
+            signContainer.style.left = saved.sign.l;
+            signContainer.style.width = saved.sign.w;
+            paper.dir = saved.dir;
+        } else {
+            loadTemplate();
         }
     }
 
-    // --- وظائف التحكم بالصور ---
+    // --- وظائف السحب وتغيير الحجم ---
     function makeMovable(el) {
         let isDragging = false, isResizing = false, sx, sy, sw, sh;
         el.onmousedown = (e) => {
@@ -158,7 +163,7 @@
             } else if (isResizing) {
                 el.style.width = (sw + (e.clientX - sx)) + "px";
             }
-            saveAll();
+            saveState();
         };
         document.onmouseup = () => { isDragging = false; isResizing = false; };
     }
@@ -175,69 +180,75 @@
         document.getElementById('signContainer').classList.toggle('locked');
     }
 
-    // --- إدارة القوالب ---
-    function getInvNum() {
-        let n = localStorage.getItem('inv_n') || 1001;
-        localStorage.setItem('inv_n', parseInt(n) + 1);
-        return n;
-    }
-
+    // --- إدارة الفواتير والقوالب ---
     function loadTemplate() {
         const type = document.getElementById('templateSelector').value;
+        const dateStr = new Date().toLocaleDateString('he-IL');
+        
         if (type === 'invoice') {
-            editor.innerHTML = `<div style="display:flex; justify-content:space-between; font-size:12px"><span>رقم الفاتورة: #INV-${getInvNum()}</span><span>التاريخ: ${new Date().toLocaleDateString('he-IL')}</span></div>
+            const n = localStorage.getItem('mad_inv_n') || 1001;
+            editor.innerHTML = `
+                <div style="display:flex; justify-content:space-between; font-size:12px; color:#555">
+                    <span>رقم الفاتورة: #INV-${n}</span>
+                    <span>التاريخ: ${dateStr}</span>
+                </div>
                 <div class="doc-title">فاتورة ضريبية / חשבונית מס</div>
-                <p>العميل: [اسم العميل]</p>
+                <p>اسم العميل / לכבוד: <span contenteditable="true">[اكتب الاسم]</span></p>
                 <table id="invTable">
                     <thead><tr><th>الوصف</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead>
-                    <tbody><tr><td>منتج</td><td>1</td><td>0</td><td>0</td></tr></tbody>
+                    <tbody><tr><td contenteditable="true">منتج</td><td contenteditable="true">1</td><td contenteditable="true">0</td><td>0.00</td></tr></tbody>
                 </table>
-                <button class="add-row-btn" onclick="addRow()">+ إضافة سطر</button>
-                <h3 style="text-align:left">الإجمالي: <span id="gTotal">0</span> ₪</h3>`;
+                <button class="add-row-btn" onclick="addRow()">+ إضافة سطر جديد</button>
+                <h3 style="text-align:left; margin-top:30px">المجموع النهائي: <span id="gTotal">0.00</span> ₪</h3>`;
+            localStorage.setItem('mad_inv_n', parseInt(n) + 1);
         } else if (type === 'delivery') {
-            editor.innerHTML = `<div class="doc-title">إرسالية / תעודת משלוח</div>
-                <p>إلى: ....................</p>
-                <table><thead><tr><th>المادة</th><th>الكمية</th><th>ملاحظات</th></tr></thead>
-                <tbody><tr><td>-</td><td>-</td><td>-</td></tr></tbody></table>
-                <button class="add-row-btn" onclick="addRow()">+ إضافة سطر</button>`;
+            editor.innerHTML = `<div class="doc-title">إرسالية / תעודת משלוח</div><p>التاريخ: ${dateStr}</p><p>إلى: [اكتب الوجهة]</p><table><thead><tr><th>المادة</th><th>الكمية</th><th>ملاحظات</th></tr></thead><tbody><tr><td contenteditable="true">-</td><td contenteditable="true">0</td><td contenteditable="true">-</td></tr></tbody></table><button class="add-row-btn" onclick="addRow()">+ إضافة سطر</button>`;
         } else if (type === 'blank') {
-            editor.innerHTML = `<div class="doc-title">مستند رسمي</div><p>اكتب هنا...</p>`;
+            editor.innerHTML = `<div class="doc-title">مستند رسمي</div><p>ابدأ الكتابة هنا...</p>`;
         } else {
             editor.innerHTML = `<div class="doc-title">عقد عمل رسمي</div><p>تم الاتفاق بين شركة <strong>MAD PARFUMEUR</strong> والسيد/ة [الاسم]...</p>`;
         }
-        saveAll();
+        saveState();
     }
 
     function addRow() {
         const table = document.querySelector('table tbody');
         const row = table.insertRow();
-        row.innerHTML = table.rows[0].cells.length === 4 ? `<td>-</td><td>0</td><td>0</td><td>0</td>` : `<td>-</td><td>0</td><td>-</td>`;
-        Array.from(row.cells).forEach(c => c.contentEditable = true);
+        const colCount = table.rows[0].cells.length;
+        if(colCount === 4) row.innerHTML = `<td contenteditable="true">-</td><td contenteditable="true">0</td><td contenteditable="true">0</td><td>0.00</td>`;
+        else row.innerHTML = `<td contenteditable="true">-</td><td contenteditable="true">0</td><td contenteditable="true">-</td>`;
+        saveState();
     }
 
-    document.addEventListener('input', () => {
-        const rows = document.querySelectorAll('#invTable tbody tr');
-        let grand = 0;
-        rows.forEach(r => {
-            let q = parseFloat(r.cells[1].innerText) || 0, p = parseFloat(r.cells[2].innerText) || 0;
-            let t = q * p; r.cells[3].innerText = t.toFixed(2); grand += t;
-        });
-        if (document.getElementById('gTotal')) document.getElementById('gTotal').innerText = grand.toFixed(2);
-        saveAll();
+    // تصحيح الحساب المالي
+    document.addEventListener('input', (e) => {
+        if (document.getElementById('invTable')) {
+            const rows = document.querySelectorAll('#invTable tbody tr');
+            let grand = 0;
+            rows.forEach(r => {
+                let q = parseFloat(r.cells[1].innerText.replace(/[^\d.]/g, '')) || 0;
+                let p = parseFloat(r.cells[2].innerText.replace(/[^\d.]/g, '')) || 0;
+                let t = q * p;
+                r.cells[3].innerText = t.toFixed(2);
+                grand += t;
+            });
+            const gt = document.getElementById('gTotal');
+            if(gt) gt.innerText = grand.toFixed(2);
+        }
+        saveState();
     });
 
     function toggleDir() {
         const p = document.getElementById('paper');
         p.dir = p.dir === 'rtl' ? 'ltr' : 'rtl';
         p.style.textAlign = p.dir === 'rtl' ? 'right' : 'left';
-        saveAll();
+        saveState();
     }
 
     function insertDate() { document.execCommand('insertText', false, new Date().toLocaleDateString('he-IL')); }
+    function resetAll() { if(confirm("سيتم مسح الأرشيف والبيانات! هل أنت متأكد؟")) { localStorage.clear(); location.reload(); } }
 
-    function resetAll() { if(confirm("سيتم مسح كل شيء! هل أنت متأكد؟")) { localStorage.clear(); location.reload(); } }
-
-    window.onload = loadSaved;
+    window.onload = loadState;
 </script>
 </body>
 </html>
