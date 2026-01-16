@@ -3,212 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAD PARFUMEUR | Smart Document System</title>
+    <title>MAD PARFUMEUR | Enterprise Admin System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-
     <style>
         :root {
-            --primary-dark: #002b36; /* الأسود الكحلي الفخم */
-            --accent-gold: #c5a021;  /* الذهبي */
-            --bg-gray: #f4f4f4;
+            --royal-black: #0a0a0a;
+            --deep-gold: #b38b2d;
+            --soft-gold: #d4af37;
+            --bg-canvas: #1e1e1e;
         }
 
-        body {
-            margin: 0;
-            font-family: 'Assistant', sans-serif;
-            background: var(--bg-gray);
-            color: #333;
-        }
+        body { margin: 0; font-family: 'Assistant', sans-serif; background: var(--bg-canvas); color: #333; }
 
-        /* --- شريط الأدوات الذكي --- */
+        /* --- Toolbar --- */
         .toolbar {
-            position: sticky;
-            top: 0;
-            width: 100%;
-            background: white;
-            padding: 15px;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            z-index: 1000;
-            border-bottom: 3px solid var(--accent-gold);
+            position: sticky; top: 0; width: 100%; background: #111; padding: 12px;
+            display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+            z-index: 2000; border-bottom: 2px solid var(--deep-gold);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
-
         .toolbar button, .toolbar select {
-            padding: 10px 16px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            background: white;
-            cursor: pointer;
-            font-weight: 600;
+            background: #222; color: #fff; border: 1px solid var(--deep-gold);
+            padding: 8px 15px; cursor: pointer; border-radius: 4px; font-weight: bold;
             transition: 0.3s;
         }
+        .toolbar button:hover { background: var(--deep-gold); color: black; }
+        .btn-print { background: var(--deep-gold) !important; color: black !important; }
+        .btn-reset { background: #600 !important; border-color: #f00 !important; }
 
-        .toolbar button:hover { background: var(--accent-gold); color: white; border-color: var(--accent-gold); }
-        .btn-print { background: var(--primary-dark) !important; color: white !important; }
-
-        /* --- حاوية المستند --- */
-        .page-container {
-            display: flex;
-            justify-content: center;
-            padding: 40px 20px;
-        }
-
+        /* --- Paper Style --- */
+        .page-container { display: flex; justify-content: center; padding: 40px 0; }
         .paper {
-            width: 210mm;
-            min-height: 297mm;
-            background: white;
-            position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            overflow: hidden; /* لقص الزوايا الذهبية */
-            display: flex;
-            flex-direction: column;
+            width: 210mm; min-height: 297mm; background: white; position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8); display: flex; flex-direction: column;
         }
 
-        /* --- التصميم الجرافيكي (الزوايا) --- */
-        .header-design {
-            height: 120px;
-            background: var(--primary-dark);
-            position: relative;
-            clip-path: polygon(0 0, 100% 0, 100% 70%, 0% 100%);
-            display: flex;
-            align-items: center;
-            padding: 0 40px;
-        }
+        /* --- Graphic Frames --- */
+        .top-frame { height: 160px; background: var(--royal-black); clip-path: polygon(0 0, 100% 0, 100% 60%, 0% 100%); position: relative; }
+        .top-frame::after { content: ""; position: absolute; bottom: 0; right: 0; width: 100%; height: 12px; background: var(--deep-gold); transform: translateY(5px) rotate(-2deg); }
+        
+        .bottom-frame { height: 100px; background: var(--royal-black); clip-path: polygon(0 40%, 100% 0, 100% 100%, 0% 100%); margin-top: auto; position: relative; }
+        .bottom-frame::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 8px; background: var(--deep-gold); transform: translateY(-4px) rotate(1deg); }
 
-        .header-design::after {
-            content: "";
-            position: absolute;
-            bottom: 0; right: 0;
-            width: 100%; height: 10px;
-            background: var(--accent-gold);
-            transform: translateY(10px) rotate(-2deg);
-        }
+        /* --- Moveable Elements --- */
+        .movable { position: absolute; cursor: move; z-index: 100; border: 1px dashed transparent; }
+        .movable:hover { border: 1px dashed var(--deep-gold); }
+        .movable img { width: 100%; height: auto; display: block; pointer-events: none; }
+        .resizer { width: 12px; height: 12px; background: var(--deep-gold); position: absolute; right: -5px; bottom: -5px; cursor: nwse-resize; border-radius: 50%; display: none; }
+        .movable:hover .resizer { display: block; }
+        .locked { border: none !important; cursor: default !important; }
+        .locked .resizer { display: none !important; }
 
-        .footer-design {
-            height: 80px;
-            background: var(--primary-dark);
-            clip-path: polygon(0 30%, 100% 0, 100% 100%, 0% 100%);
-            margin-top: auto;
-            position: relative;
-        }
+        /* --- Content Areas --- */
+        .main-content { padding: 40px 60px; flex-grow: 1; outline: none; font-family: 'Amiri', serif; font-size: 13pt; line-height: 1.6; }
+        .doc-title { text-align: center; font-size: 28pt; font-weight: bold; color: var(--royal-black); margin-bottom: 20px; text-decoration: underline; }
 
-        .footer-design::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 8px;
-            background: var(--accent-gold);
-            transform: translateY(-5px) rotate(1deg);
-        }
+        /* --- Table Styling --- */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th { background: var(--royal-black); color: white; padding: 12px; border: 1px solid #333; }
+        td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        .add-row-btn { background: #eee; border: 1px dashed #ccc; width: 100%; padding: 8px; cursor: pointer; margin-top: 5px; font-weight: bold; }
 
-        /* --- العناصر الداخلية --- */
-        .logo-box { z-index: 10; }
-        .logo-box img { max-height: 60px; filter: brightness(0) invert(1); } /* تحويل اللوجو للأبيض ليتناسب مع الخلفية الداكنة */
-
-        .content-area {
-            padding: 40px 60px;
-            flex-grow: 1;
-            font-family: 'Amiri', serif;
-            font-size: 14pt;
-            line-height: 1.8;
-            outline: none;
-        }
-
-        .signature-area {
-            padding: 0 60px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
-
-        .sign-block { text-align: center; width: 150px; }
-        .sign-block img { max-width: 120px; margin-bottom: 5px; }
-
-        /* --- الطباعة --- */
+        /* --- Print Mode --- */
         @media print {
-            body { background: white; }
-            .toolbar { display: none; }
-            .page-container { padding: 0; margin: 0; }
-            .paper { box-shadow: none; width: 100%; border: none; }
+            body { background: white; } .toolbar, .add-row-btn { display: none !important; }
+            .page-container { padding: 0; } .paper { box-shadow: none; width: 100%; margin: 0; }
+            .movable { border: none !important; } .resizer { display: none !important; }
         }
     </style>
 </head>
 <body>
 
 <div class="toolbar">
-    <select id="typeSelector" onchange="updateTemplate()">
-        <option value="contract">📄 عقد عمل / חוזה עבודה</option>
-        <option value="warning">⚠️ إنذار / אזהרה</option>
-        <option value="letter">✉️ رسالة رسمية / מכתב רשמי</option>
+    <select id="templateSelector" onchange="loadTemplate()">
+        <option value="contract">📄 عقد عمل موظف</option>
+        <option value="invoice">🧾 فاتورة ضريبية (Invoice)</option>
+        <option value="delivery">🚚 إرسالية (Delivery)</option>
+        <option value="blank">⚪ صفحة فارغة</option>
     </select>
-    <button onclick="toggleLang()">🔄 تبديل اللغة (AR/HE)</button>
+    
+    <button onclick="toggleDir()">🔄 تحويل (AR/HE)</button>
     <button onclick="insertDate()">📅 إدراج التاريخ</button>
-    <button onclick="document.execCommand('bold')"><b>B</b></button>
+    <button onclick="toggleLock()" id="lockBtn">🔓 العناصر متحركة</button>
+    <button onclick="document.execCommand('bold')">B</button>
     <button class="btn-print" onclick="window.print()">🖨️ تصدير PDF</button>
+    <button class="btn-reset" onclick="resetAll()">🧹 مسح الكل</button>
 </div>
 
 <div class="page-container">
-    <div class="paper" id="mainDoc" dir="rtl">
-        
-        <div class="header-design">
-            <div class="logo-box">
-                <img src="logo.jpg" alt="Logo"> </div>
-            <div style="color: white; margin-right: auto; text-align: left; font-size: 10px; line-height: 1.2;">
-                MAD PARFUMEUR LTD<br>
-                Company ID: 515456093<br>
-                Tel Aviv, Israel
-            </div>
+    <div class="paper" id="paper" dir="rtl">
+        <div class="top-frame"></div>
+
+        <div class="movable" id="logoContainer" style="top: 30px; left: 50px; width: 180px;">
+            <img src="logo.jpg" alt="Logo">
+            <div class="resizer"></div>
         </div>
 
-        <div class="content-area" id="editor" contenteditable="true">
-            <h2 style="text-align: center; color: var(--primary-dark);">عقد توظيف رسمي</h2>
-            <p>إنه في يوم <span id="doc-date">____</span>، تم الاتفاق بين شركة <strong>MAD PARFUMEUR</strong> وبين السيد/ة [اكتب الاسم هنا]، رقم هوية [........] على ما يلي:</p>
-            <p>1. يلتزم الموظف بالعمل في قسم [........] تحت مسمى وظيفي [........].</p>
-            <p>2. يتم تحديد الراتب والامتيازات وفقاً للملحق الإداري المرفق.</p>
-            <p>هذا المستند يعتبر سارياً من تاريخ توقيعه.</p>
+        <div class="main-content" contenteditable="true" id="editorArea">
+            </div>
+
+        <div class="movable" id="signContainer" style="bottom: 120px; left: 50px; width: 150px;">
+            <img src="signther.jpg" alt="Signature">
+            <div class="resizer"></div>
         </div>
 
-        <div class="signature-area">
-            <div class="sign-block">
-                <p style="font-size: 12px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">توقيع الموظف</p>
-            </div>
-            <div class="sign-block">
-                <img src="signther.jpg" alt="Signature"> <p style="font-size: 12px;">توقيع الإدارة والختم</p>
-            </div>
-        </div>
-
-        <div class="footer-design"></div>
+        <div class="bottom-frame"></div>
     </div>
 </div>
 
 <script>
-    function toggleLang() {
-        const doc = document.getElementById('mainDoc');
-        doc.dir = doc.dir === 'rtl' ? 'ltr' : 'rtl';
-        doc.style.textAlign = doc.dir === 'rtl' ? 'right' : 'left';
+    let isLocked = false;
+    const editor = document.getElementById('editorArea');
+
+    // --- الحفظ التلقائي ---
+    function saveAll() {
+        localStorage.setItem('mad_content', editor.innerHTML);
+        localStorage.setItem('logo_pos', JSON.stringify({
+            top: logoContainer.style.top,
+            left: logoContainer.style.left,
+            width: logoContainer.style.width
+        }));
     }
 
-    function insertDate() {
-        const d = new Date().toLocaleDateString('he-IL');
-        document.getElementById('doc-date').innerText = d;
-    }
+    function loadSaved() {
+        const savedText = localStorage.getItem('mad_content');
+        if (savedText) editor.innerHTML = savedText;
+        else loadTemplate();
 
-    function updateTemplate() {
-        const type = document.getElementById('typeSelector').value;
-        const editor = document.getElementById('editor');
-        if(type === 'warning') {
-            editor.innerHTML = `<h2 style="text-align: center; color: #c0392b;">إنذار رسمي / מכתב אזהרה</h2><p>إلى السيد/ة: [الاسم]</p><p>نحيطكم علماً بضرورة الالتزام بالتعليمات الإدارية وتجنب تكرار المخالفة المذكورة أدناه لضمان استمرارية العمل بشكل سليم.</p>`;
-        } else if(type === 'letter') {
-            editor.innerHTML = `<h2 style="text-align: center;">رسالة رسمية / מכתב רשמי</h2><p>تحية طيبة وبعد،</p><p>نود إفادتكم بخصوص الموضوع التالي: [اكتب الموضوع هنا]</p>`;
-        } else {
-            location.reload(); // لإعادة قالب العقد الأصلي
+        const logoPos = JSON.parse(localStorage.getItem('logo_pos'));
+        if (logoPos) {
+            logoContainer.style.top = logoPos.top;
+            logoContainer.style.left = logoPos.left;
+            logoContainer.style.width = logoPos.width;
         }
     }
-</script>
 
+    // --- وظائف التحكم بالصور ---
+    function makeMovable(el) {
+        let isDragging = false, isResizing = false, sx, sy, sw, sh;
+        el.onmousedown = (e) => {
+            if (isLocked) return;
+            if (e.target.className === 'resizer') isResizing = true;
+            else isDragging = true;
+            sx = e.clientX; sy = e.clientY;
+            sw = el.offsetWidth; sh = el.offsetHeight;
+            e.preventDefault();
+        };
+        document.onmousemove = (e) => {
+            if (isDragging) {
+                el.style.left = (el.offsetLeft + (e.clientX - sx)) + "px";
+                el.style.top = (el.offsetTop + (e.clientY - sy)) + "px";
+                sx = e.clientX; sy = e.clientY;
+            } else if (isResizing) {
+                el.style.width = (sw + (e.clientX - sx)) + "px";
+            }
+            saveAll();
+        };
+        document.onmouseup = () => { isDragging = false; isResizing = false; };
+    }
+
+    makeMovable(document.getElementById('logoContainer'));
+    makeMovable(document.getElementById('signContainer'));
+
+    function toggleLock() {
+        isLocked = !isLocked;
+        const btn = document.getElementById('lockBtn');
+        btn.innerText = isLocked ? "🔒 العناصر مقفلة" : "🔓 العناصر متحركة";
+        btn.style.background = isLocked ? "#b38b2d" : "#222";
+        document.getElementById('logoContainer').classList.toggle('locked');
+        document.getElementById('signContainer').classList.toggle('locked');
+    }
+
+    // --- إدارة القوالب ---
+    function getInvNum() {
+        let n = localStorage.getItem('inv_n') || 1001;
+        localStorage.setItem('inv_n', parseInt(n) + 1);
+        return n;
+    }
+
+    function loadTemplate() {
+        const type = document.getElementById('templateSelector').value;
+        if (type === 'invoice') {
+            editor.innerHTML = `<div style="display:flex; justify-content:space-between; font-size:12px"><span>رقم الفاتورة: #INV-${getInvNum()}</span><span>التاريخ: ${new Date().toLocaleDateString('he-IL')}</span></div>
+                <div class="doc-title">فاتورة ضريبية / חשבונית מס</div>
+                <p>العميل: [اسم العميل]</p>
+                <table id="invTable">
+                    <thead><tr><th>الوصف</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead>
+                    <tbody><tr><td>منتج</td><td>1</td><td>0</td><td>0</td></tr></tbody>
+                </table>
+                <button class="add-row-btn" onclick="addRow()">+ إضافة سطر</button>
+                <h3 style="text-align:left">الإجمالي: <span id="gTotal">0</span> ₪</h3>`;
+        } else if (type === 'delivery') {
+            editor.innerHTML = `<div class="doc-title">إرسالية / תעודת משלוח</div>
+                <p>إلى: ....................</p>
+                <table><thead><tr><th>المادة</th><th>الكمية</th><th>ملاحظات</th></tr></thead>
+                <tbody><tr><td>-</td><td>-</td><td>-</td></tr></tbody></table>
+                <button class="add-row-btn" onclick="addRow()">+ إضافة سطر</button>`;
+        } else if (type === 'blank') {
+            editor.innerHTML = `<div class="doc-title">مستند رسمي</div><p>اكتب هنا...</p>`;
+        } else {
+            editor.innerHTML = `<div class="doc-title">عقد عمل رسمي</div><p>تم الاتفاق بين شركة <strong>MAD PARFUMEUR</strong> والسيد/ة [الاسم]...</p>`;
+        }
+        saveAll();
+    }
+
+    function addRow() {
+        const table = document.querySelector('table tbody');
+        const row = table.insertRow();
+        row.innerHTML = table.rows[0].cells.length === 4 ? `<td>-</td><td>0</td><td>0</td><td>0</td>` : `<td>-</td><td>0</td><td>-</td>`;
+        Array.from(row.cells).forEach(c => c.contentEditable = true);
+    }
+
+    document.addEventListener('input', () => {
+        const rows = document.querySelectorAll('#invTable tbody tr');
+        let grand = 0;
+        rows.forEach(r => {
+            let q = parseFloat(r.cells[1].innerText) || 0, p = parseFloat(r.cells[2].innerText) || 0;
+            let t = q * p; r.cells[3].innerText = t.toFixed(2); grand += t;
+        });
+        if (document.getElementById('gTotal')) document.getElementById('gTotal').innerText = grand.toFixed(2);
+        saveAll();
+    });
+
+    function toggleDir() {
+        const p = document.getElementById('paper');
+        p.dir = p.dir === 'rtl' ? 'ltr' : 'rtl';
+        p.style.textAlign = p.dir === 'rtl' ? 'right' : 'left';
+        saveAll();
+    }
+
+    function insertDate() { document.execCommand('insertText', false, new Date().toLocaleDateString('he-IL')); }
+
+    function resetAll() { if(confirm("سيتم مسح كل شيء! هل أنت متأكد؟")) { localStorage.clear(); location.reload(); } }
+
+    window.onload = loadSaved;
+</script>
 </body>
 </html>
