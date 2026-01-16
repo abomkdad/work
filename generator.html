@@ -3,325 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAD PARFUMEUR | Smart Doc System</title>
+    <title>MAD PARFUMEUR | Professional Document Editor</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --gold: #C5A021;
-            --gold-light: #E0C56E;
-            --black: #1A1A1A;
-            --dark-gray: #333;
-            --light-bg: #F8F9FA;
+            --primary: #111;
+            --accent: #D4AF37; /* Gold */
+            --bg: #e4e4e4;
             --white: #ffffff;
-            --shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
-        * { box-sizing: border-box; transition: all 0.3s ease; }
-        
         body {
             margin: 0;
             font-family: 'Assistant', sans-serif;
-            background-color: var(--light-bg);
-            color: var(--black);
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* UI Wrapper */
-        .admin-panel {
-            max-width: 1200px;
-            margin: 20px auto;
+        /* --- Toolbar Styles --- */
+        .toolbar {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            background: var(--primary);
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .toolbar button, .toolbar select {
+            padding: 10px 18px;
+            cursor: pointer;
+            border-radius: 6px;
+            border: 1px solid var(--accent);
+            background: transparent;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .toolbar button:hover {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .toolbar .btn-print {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        /* --- Document Paper Styles --- */
+        .page-container {
+            margin: 40px 0;
             padding: 20px;
         }
 
-        .header-ui {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header-ui h1 {
-            font-family: 'Amiri', serif;
-            font-size: 2rem;
-            color: var(--black);
-            margin-bottom: 10px;
-        }
-
-        /* Controls Section */
-        .controls-card {
-            background: var(--white);
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .input-group { display: flex; flex-direction: column; }
-        label { font-weight: 700; margin-bottom: 8px; font-size: 0.9rem; color: var(--dark-gray); }
-        
-        input, select {
-            padding: 12px;
-            border: 1.5px solid #eee;
-            border-radius: 8px;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        input:focus { border-color: var(--gold); }
-
-        .lang-switcher {
-            grid-column: 1 / -1;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .btn-lang {
-            padding: 8px 20px;
-            border-radius: 20px;
-            border: 2px solid var(--gold);
-            background: transparent;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .btn-lang.active { background: var(--gold); color: white; }
-
-        /* Document Preview Area */
-        .print-container {
-            background: var(--white);
-            width: 210mm; /* A4 Width */
+        .paper {
+            width: 210mm;
             min-height: 297mm;
-            margin: 0 auto;
-            padding: 20mm;
-            box-shadow: var(--shadow);
+            background: var(--white);
+            padding: 25mm 20mm;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
             position: relative;
-            overflow: hidden;
+            outline: none;
+            transition: 0.3s;
         }
 
-        /* Official Doc Styling */
+        /* --- Header/Footer Styles --- */
         .doc-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--gold);
-            padding-bottom: 20px;
+            align-items: flex-start;
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 15px;
             margin-bottom: 30px;
         }
 
-        .doc-logo img { width: 140px; }
-        .company-info { text-align: left; font-size: 12px; line-height: 1.4; }
-        .company-info.rtl { text-align: right; }
+        .brand-zone {
+            display: flex;
+            flex-direction: column;
+        }
 
-        .doc-content { font-family: 'Amiri', serif; font-size: 13pt; line-height: 1.8; color: #222; }
-        .doc-title { text-align: center; font-size: 22pt; margin-bottom: 40px; text-decoration: underline; color: var(--black); }
+        .logo-placeholder {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .editable-area {
+            min-height: 600px;
+            font-family: 'Amiri', serif;
+            font-size: 14pt;
+            line-height: 1.8;
+            color: #333;
+            text-align: justify;
+        }
+
+        [contenteditable="true"]:focus {
+            background: #fffdf0;
+            padding: 5px;
+            border-radius: 4px;
+        }
 
         .doc-footer {
-            position: absolute;
-            bottom: 20mm;
-            left: 20mm;
-            right: 20mm;
+            margin-top: 50px;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
             display: flex;
             justify-content: space-between;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
+            font-size: 12px;
         }
 
-        .signature-box { text-align: center; width: 150px; }
-        .signature-img { width: 100px; margin-bottom: 5px; filter: grayscale(1); }
-
-        /* Templates Visibility */
-        .template { display: none; }
-        .template.active { display: block; }
-
-        /* Buttons */
-        .actions { text-align: center; margin-top: 30px; }
-        .btn-print {
-            background: var(--black);
-            color: var(--gold);
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border: 2px solid var(--gold);
-            border-radius: 50px;
-            cursor: pointer;
-        }
-        .btn-print:hover { background: var(--gold); color: white; }
-
-        /* Responsive */
-        @media (max-width: 850px) {
-            .print-container { width: 100%; padding: 10mm; zoom: 0.6; }
-            .admin-panel { padding: 10px; }
+        /* --- Utilities --- */
+        .stamp {
+            position: absolute;
+            bottom: 100px;
+            left: 50px;
+            opacity: 0.8;
+            pointer-events: none;
         }
 
-        /* Print Settings */
+        /* --- Print Optimization --- */
         @media print {
             body { background: white; }
-            .controls-card, .actions, .header-ui, .lang-switcher { display: none !important; }
-            .admin-panel { margin: 0; padding: 0; }
-            .print-container { box-shadow: none; margin: 0; border: none; width: 100%; }
+            .toolbar { display: none; }
+            .page-container { margin: 0; padding: 0; }
+            .paper { box-shadow: none; border: none; margin: 0; width: 100%; }
+        }
+
+        @media (max-width: 850px) {
+            .paper { width: 95vw; padding: 10mm; zoom: 0.8; }
         }
     </style>
 </head>
 <body>
 
-<div class="admin-panel">
-    <div class="header-ui">
-        <h1>MAD PARFUMEUR</h1>
-        <p>نظام الإدارة الذكي للمستندات والموظفين</p>
-    </div>
+<div class="toolbar">
+    <select id="templateSelector" onchange="loadTemplate()">
+        <option value="contract">📄 عقد عمل جديد</option>
+        <option value="warning">⚠️ كتاب إنذار رسمي</option>
+        <option value="recommendation">🌟 شهادة توصية</option>
+        <option value="blank">📝 مستند فارغ</option>
+    </select>
+    
+    <button onclick="addCurrentDate()">📅 أضف التاريخ الآن</button>
+    <button onclick="toggleDirection()">🔄 تحويل (العربية / עברית)</button>
+    <button onclick="toggleBold()"><b>B</b></button>
+    <button onclick="toggleUnderline()"><u>U</u></button>
+    <button class="btn-print" onclick="window.print()">🖨️ حفظ وتصدير PDF</button>
+</div>
 
-    <div class="lang-switcher">
-        <button class="btn-lang active" onclick="setLang('ar')">العربية</button>
-        <button class="btn-lang" onclick="setLang('he')">עברית</button>
-    </div>
-
-    <div class="controls-card">
-        <div class="input-group">
-            <label id="lbl-type">نوع المستند</label>
-            <select id="docType" onchange="updateUI()">
-                <option value="contract">عقد عمل / חוזה עבודה</option>
-                <option value="warning">إنذار / אזהרה</option>
-                <option value="salary">تأكيد استلام راتب / אישור שכר</option>
-            </select>
-        </div>
-        <div class="input-group">
-            <label id="lbl-name">اسم الموظف</label>
-            <input type="text" id="nameInput" placeholder="ادخل الاسم الكامل" oninput="syncData()">
-        </div>
-        <div class="input-group">
-            <label id="lbl-id">رقم الهوية / ח.פ</label>
-            <input type="text" id="idInput" placeholder="000000000" oninput="syncData()">
-        </div>
-        <div class="input-group" id="extra-field">
-            <label id="lbl-extra">المسمى الوظيفي</label>
-            <input type="text" id="extraInput" placeholder="..." oninput="syncData()">
-        </div>
-    </div>
-
-    <div class="print-container" id="printable">
+<div class="page-container">
+    <div class="paper" id="paper">
+        
         <div class="doc-header">
-            <div class="company-info" id="comp-info">
-                <strong>MAD PARFUMEUR LTD</strong><br>
-                Company ID: 515456093<br>
-                Tel: 05X-XXXXXXX<br>
-                Email: Info@mad-parfumeur.co.il
+            <div class="brand-zone">
+                <div class="logo-placeholder" contenteditable="true">MAD PARFUMEUR</div>
+                <div contenteditable="true" style="font-size: 12px; color: #666;">
+                    ח.פ 515456093<br>
+                    Head Office: Tel Aviv, IL
+                </div>
             </div>
-            <div class="doc-logo">
-                <img src="https://i.imgur.com/your-logo.png" alt="Logo" onerror="this.src='https://via.placeholder.com/150x50?text=MAD+LOGO'">
+            <div contenteditable="true" style="text-align: left; font-size: 12px;">
+                الرقم المرجعي: MAD-2026-001<br>
+                تاريخ الإصدار: <span id="auto-date">--/--/----</span>
             </div>
         </div>
 
-        <div class="doc-content">
-            <div id="doc-title" class="doc-title">عقد عمل</div>
-            
-            <div id="contract-tmpl" class="template active">
-                <div class="ar">
-                    تم الاتفاق بين شركة <strong>MAD PARFUMEUR</strong> (طرف أول) والسيد/ة <strong class="sync-name">____</strong> صاحب الهوية رقم <strong class="sync-id">____</strong> (طرف ثاني) على العمل بمهنة <strong class="sync-extra">____</strong>. يلتزم الطرفان بكافة القوانين المعمول بها.
-                </div>
-                <div class="he" style="display:none;" dir="rtl">
-                    הסכם זה נערך בין חברת <strong>MAD PARFUMEUR</strong> (צד א') לבין מר/גב' <strong class="sync-name">____</strong> ת.ז <strong class="sync-id">____</strong> (צד ב') לעבודה בתפקיד <strong class="sync-extra">____</strong>.
-                </div>
-            </div>
-
-            <div id="warning-tmpl" class="template">
-                <div class="ar">
-                    إلى الموظف: <strong class="sync-name">____</strong><br>
-                    نحيطكم علماً بأنكم قد خالفتم النظم الإدارية في الشركة بخصوص: <strong class="sync-extra">____</strong>. هذا إنذار رسمي نهائي.
-                </div>
-                <div class="he" style="display:none;" dir="rtl">
-                    לכבוד העובד/ת: <strong class="sync-name">____</strong><br>
-                    הרינו להודיעך על הפרת משמעת בנושא: <strong class="sync-extra">____</strong>. מכתב זה מהווה אזהרה רשמית.
-                </div>
-            </div>
-
-            <div id="salary-tmpl" class="template">
-                <div class="ar">
-                    تشهد شركة ماد بارفومير بأن الموظف <strong class="sync-name">____</strong> يعمل لدينا براتب أساسي قدره <strong class="sync-extra">____</strong> شيكل.
-                </div>
-                <div class="he" style="display:none;" dir="rtl">
-                    חברת MAD PARFUMEUR מאשרת כי העובד/ת <strong class="sync-name">____</strong> מועסק אצלנו בשכר בסיס של <strong class="sync-extra">____</strong> ש"ח.
-                </div>
-            </div>
+        <div class="editable-area" contenteditable="true" id="editor">
+            <h2 style="text-align: center;"><u>اتفاقية عمل رسمية</u></h2>
+            <br>
+            بموجب هذه الوثيقة، تم الاتفاق بين شركة MAD PARFUMEUR (المشار إليها لاحقاً بصاحب العمل) وبين الموظف المذكور أدناه على شروط التوظيف التالية...
+            <br><br>
+            <b>1. بيانات الموظف:</b><br>
+            اسم الموظف: [اكتب الاسم هنا]<br>
+            رقم الهوية: [اكتب الرقم هنا]<br><br>
+            <b>2. المهام الوظيفية:</b><br>
+            يلتزم الموظف بالقيام بمهام [المسمى الوظيفي] في قسم [القسم].
         </div>
 
         <div class="doc-footer">
-            <div class="signature-box">
-                التاريخ: <span id="current-date"></span>
+            <div style="text-align: center;">
+                <p>توقيع الموظف</p>
+                <div style="width: 120px; border-bottom: 1px solid #000; height: 30px;"></div>
             </div>
-            <div class="signature-box">
-                توقيع الإدارة<br>
-                <img src="https://via.placeholder.com/100x40?text=SIGNATURE" class="signature-img">
+            <div style="text-align: center;">
+                <p>توقيع وختم الشركة</p>
+                <img src="https://via.placeholder.com/80x40?text=MAD+STAMP" class="stamp-img" style="max-height: 50px;">
             </div>
         </div>
-    </div>
 
-    <div class="actions">
-        <button class="btn-print" onclick="window.print()">🖨️ طباعة المستند الرسمى (PDF)</button>
     </div>
 </div>
 
 <script>
-    let currentLang = 'ar';
+    const editor = document.getElementById('editor');
+    const paper = document.getElementById('paper');
 
-    function setLang(lang) {
-        currentLang = lang;
-        document.querySelectorAll('.btn-lang').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
+    // وظيفة تبديل القوالب
+    function loadTemplate() {
+        const type = document.getElementById('templateSelector').value;
+        const date = new Date().toLocaleDateString('ar-EG');
         
-        const container = document.getElementById('printable');
-        const compInfo = document.getElementById('comp-info');
-        
-        if(lang === 'he') {
-            container.dir = 'rtl';
-            compInfo.className = 'company-info rtl';
-            document.querySelectorAll('.ar').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('.he').forEach(el => el.style.display = 'block');
+        if(type === 'warning') {
+            editor.innerHTML = `<h2 style="text-align: center; color: #c0392b;"><u>إنذار إداري نهائي</u></h2>
+            <br>إلى السيد/ة: [اسم الموظف]<br>بعد المراجعة، تبين وجود مخالفة للنظام الداخلي للشركة بتاريخ ${date}.<br>نود التأكيد على ضرورة الالتزام بالقواعد لتجنب اتخاذ إجراءات قانونية إضافية.`;
+        } else if (type === 'recommendation') {
+            editor.innerHTML = `<h2 style="text-align: center;"><u>شهادة خبرة وتوصية</u></h2>
+            <br>تشهد شركة MAD PARFUMEUR بأن السيد/ة [الاسم] قد عمل لدينا في الفترة ما بين... وكان مثالاً للاجتهاد والتميز في العمل.`;
+        } else if (type === 'contract') {
+            editor.innerHTML = `<h2 style="text-align: center;"><u>اتفاقية عمل رسمية</u></h2><br>بموجب هذه الوثيقة... (أدخل التفاصيل الجديدة)`;
         } else {
-            container.dir = 'rtl';
-            compInfo.className = 'company-info';
-            document.querySelectorAll('.ar').forEach(el => el.style.display = 'block');
-            document.querySelectorAll('.he').forEach(el => el.style.display = 'none');
-        }
-        updateUI();
-    }
-
-    function updateUI() {
-        const type = document.getElementById('docType').value;
-        const titleEl = document.getElementById('doc-title');
-        const extraLbl = document.getElementById('lbl-extra');
-        
-        // Hide all templates
-        document.querySelectorAll('.template').forEach(t => t.classList.remove('active'));
-        document.getElementById(type + '-tmpl').classList.add('active');
-
-        // Update Labels & Titles
-        if(currentLang === 'ar') {
-            if(type === 'contract') { titleEl.innerText = "عقد عمل موظف"; extraLbl.innerText = "المسمى الوظيفي"; }
-            if(type === 'warning') { titleEl.innerText = "إنذار إداري"; extraLbl.innerText = "سبب الإنذار"; }
-            if(type === 'salary') { titleEl.innerText = "إفادة راتب"; extraLbl.innerText = "قيمة الراتب"; }
-        } else {
-            if(type === 'contract') { titleEl.innerText = "חוזה העסקה"; extraLbl.innerText = "תפקיד"; }
-            if(type === 'warning') { titleEl.innerText = "מכתב אזהרה"; extraLbl.innerText = "סיבת האזהרה"; }
-            if(type === 'salary') { titleEl.innerText = "אישור שכר"; extraLbl.innerText = "סכום השכר"; }
+            editor.innerHTML = `اكتب شيئاً هنا...`;
         }
     }
 
-    function syncData() {
-        const name = document.getElementById('nameInput').value || '________';
-        const id = document.getElementById('idInput').value || '________';
-        const extra = document.getElementById('extraInput').value || '________';
-
-        document.querySelectorAll('.sync-name').forEach(el => el.innerText = name);
-        document.querySelectorAll('.sync-id').forEach(el => el.innerText = id);
-        document.querySelectorAll('.sync-extra').forEach(el => el.innerText = extra);
+    // إضافة التاريخ الحالي عند موضع المؤشر
+    function addCurrentDate() {
+        const date = new Date().toLocaleDateString('he-IL');
+        document.getElementById('auto-date').innerText = date;
+        // يمكن أيضاً إضافته داخل النص
+        const selection = window.getSelection();
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(document.createTextNode(date));
     }
 
-    // Set Date
-    document.getElementById('current-date').innerText = new Date().toLocaleDateString('he-IL');
+    // تبديل اتجاه الصفحة (عربي/عبري)
+    function toggleDirection() {
+        if(paper.dir === 'rtl') {
+            paper.dir = 'ltr';
+            paper.style.textAlign = 'left';
+        } else {
+            paper.dir = 'rtl';
+            paper.style.textAlign = 'right';
+        }
+    }
+
+    // أوامر التنسيق البسيطة
+    function toggleBold() { document.execCommand('bold', false, null); }
+    function toggleUnderline() { document.execCommand('underline', false, null); }
+
+    // تعيين تاريخ تلقائي عند الفتح
+    document.getElementById('auto-date').innerText = new Date().toLocaleDateString('ar-EG');
 </script>
 
 </body>
